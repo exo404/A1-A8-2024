@@ -384,11 +384,11 @@ public class RobotUtil {
 		
 		caricaFile(fileNameTest, directoryTest, testFile);
 		
+		//Rinomina il file zip caricato secondo la convenzione attuale: |nomeClasse|TestRandoop.zip
 		File fileZipDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/");
 		File fileZip[] = fileZipDir.listFiles();
 		String nomeAttuale = fileZip[0].getAbsolutePath().toString();
         String nuovoNome = "/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/" + className + "TestRandoop.zip";
-
         File zipAttuale = new File(nomeAttuale);
         File zipNuova = new File(nuovoNome);
         boolean rinominato = zipAttuale.renameTo(zipNuova);
