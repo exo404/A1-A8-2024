@@ -19,10 +19,10 @@ seedvalue=$4
 vecchioiter=$5
 
 # Percorso di Java 1.8 (modificare per il proprio sistema)
-java1_8_path="/usr/lib/jvm/java-1.8-openjdk/bin/java"
+java1_8_path="/usr/lib/jvm/java-8-openjdk-amd64/bin/java"
 
 # Percorso di javac (modificare per il proprio sistema)
-javac="/usr/lib/jvm/java-1.8-openjdk/bin/javac"
+javac="/usr/lib/jvm/java-8-openjdk-amd64/bin/javac"
 
 # Percorso della cartella dove è ubicato il JAR di EMMA
 emmapath="./emma-2.0.5312/lib/emma.jar"

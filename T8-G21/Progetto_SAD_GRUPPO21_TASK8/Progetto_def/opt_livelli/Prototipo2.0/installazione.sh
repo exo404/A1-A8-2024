@@ -3,7 +3,7 @@ apt update
 apt-get -y install software-properties-common
 apt-add-repository universe
 apt-get update
-apt-get -y install maven openjdk-8-jdk git unzip
+apt-get -y install maven openjdk-8-jdk git unzip nodejs wget
 
 sleep 3
 

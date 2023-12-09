@@ -14,9 +14,10 @@
     <script th:src="@{/t5/jquery/jquery-3.7.0.com.js}"  th:inline="javascript">
     </script>
 
-
 <div class="mt-2 row">
     <p class="user_position_main" style="color: white; font-family:Arial, Helvetica, sans-serif; font-weight: bold;" >Username: <span id="usernameField"></span></p>
+    <button id="logoutButton" type="button" class="logout-button" th:onclick="redirectToLogin()">Logout</button>
+
 
 </div>
     <div class="container">
@@ -51,8 +52,10 @@
                                 <!-- Creo una lista composta di elementi lista-item che stampano 
                                 il valore degli elementi contenuti nella lista java "classi" -->
                                 <span th:each="entry: ${hashMap2}" th:id="${'levels-' + entry.key}" class="spa levels">
-                                    <button th:each="value: ${entry.value}" th:id="${entry.key + '-' + value}"  type="button" class ="lista-item my-button" th:text="${'randoop - LVL ' + value}" th:attr="onclick=|Handlebuttonrobot('${value}', this)|"></button>
-                                </span> 
+                                <!-- <button th:each="value: ${entry.value}" th:id="${entry.key + '-' + value}"  type="button" class ="lista-item my-button" th:text="${'randoop - LVL ' + value}" th:attr="onclick=|Handlebuttonrobot('${value}', this)|"></button> modificato con quello sotto-->
+                                    <button th:each="value, iterStat: ${entry.value}" th:id="${entry.key + '-' + value.list1}"  type="button" class="lista-item my-button" th:text="${iterStat.index < entry.value.size() / 2 ? 'randoop' : 'evosuite'} + ' - LVL ' + (${iterStat.index < entry.value.size() / 2 ? value.list1 : value.list2})" th:attr="onclick=|Handlebuttonrobot('${value.list1}', this, '${iterStat.index < entry.value.size() / 2 ? 'randoop' : 'evosuite'}', '${entry.value.size()}')|">
+                                    </button>
+                                </span>
                             </div>
                     </div>
                 </div>

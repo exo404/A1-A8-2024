@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.g2.t5.MyData; //aggiunto
+
 @CrossOrigin
 @Controller
 public class GuiController {
@@ -70,7 +72,8 @@ public class GuiController {
     public List<String> getLevels(String className) {
         List<String> result = new ArrayList<String>();
 
-        for(int i = 1; i < 11; i++) {
+        int i;
+        for(i = 1; i < 11; i++) {
             try {
                 restTemplate.getForEntity("http://t4-g18-app-1:3000/robots?testClassId=" + className + "&type=randoop&difficulty="+String.valueOf(i), Object.class);
             } catch (Exception e) {
@@ -78,6 +81,16 @@ public class GuiController {
             }
 
             result.add(String.valueOf(i));
+        }
+
+        for(int j = i; j-i+1 < i; j++){
+            try { // aggiunto
+                restTemplate.getForEntity("http://t4-g18-app-1:3000/robots?testClassId=" + className + "&type=evosuite&difficulty="+String.valueOf(j-i+1), Object.class);
+            } catch (Exception e) {
+                break;
+            }
+
+            result.add(String.valueOf(j));
         }
 
         return result;
@@ -106,15 +119,36 @@ public class GuiController {
         List<ClassUT> classes = getClasses();
 
         Map<Integer, String> hashMap = new HashMap<>();
-        Map<Integer, List<String>> robotList = new HashMap<>();
+        Map<Integer, List<MyData>> robotList = new HashMap<>();
+        //Map<Integer, List<String>> evosuiteLevel = new HashMap<>();
 
         for (int i = 0; i < classes.size(); i++) {
             String valore = classes.get(i).getName();
 
             List<String> levels = getLevels(valore);
             System.out.println(levels);
+
+            List<String> evo = new ArrayList<>(); //aggiunto
+            for(int j = 0; j<levels.size(); j++){ //aggiunto
+                if(j>=levels.size()/2)
+                    evo.add(j,levels.get(j-(levels.size()/2)));
+                else{
+                    evo.add(j,levels.get(j+(levels.size()/2)));
+                }     
+            }
+            System.out.println(evo);
+
+            List<MyData> struttura = new ArrayList<>();
+            
+            for(int j = 0; j<levels.size(); j++){
+                MyData strutt = new MyData(levels.get(j),evo.get(j));
+                struttura.add(j,strutt);
+            }
+            for(int j = 0; j<struttura.size(); j++)  
+                System.out.println(struttura.get(j).getList1());
             hashMap.put(i, valore);
-            robotList.put(i, levels);
+            robotList.put(i, struttura);
+            //evosuiteLevel.put(i, evo);
         }
 
         model.addAttribute("hashMap", hashMap);
@@ -122,6 +156,8 @@ public class GuiController {
         // hashMap2 = com.g2.Interfaces.t8.RobotList();
 
         model.addAttribute("hashMap2", robotList);
+
+        //model.addAttribute("evRobot", evosuiteLevel); //aggiunto
         return "main";
     }
 

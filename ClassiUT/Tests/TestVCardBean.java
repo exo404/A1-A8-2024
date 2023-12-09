@@ -1,21 +1,21 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.AfterClass;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-public class NomeClasseTest {
-	private static VCardBean cut;
+public class TestVCardBean {
+    private static VCardBean cut;
 
-	@BeforeAll
-	static public void setup() {
-		cut = new VCardBean();
-	}
+    @BeforeClass
+    public static void setup() {
+        cut = new VCardBean();
+    }
 
-	@Test
-	public void testSetVCard() {
-		cut.setVCard("Test");;
-		assertEquals(cut.getVCard(), "Test");
-	}
+    @Test
+    public void testSetVCard() {
+        cut.setVCard("Test");
+        assertEquals("Test", cut.getVCard());
+    }
 }

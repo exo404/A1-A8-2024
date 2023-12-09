@@ -18,6 +18,9 @@
     <script th:src="@{/t5/codemirror/addon/search/search.js}"th:inline="javascript"></script>
     <script th:src="@{/t5/jquery/jquery-3.7.0.com.js}"  th:inline="javascript">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
     
     <style>
       *{
@@ -147,6 +150,14 @@
       }
       .find-button{
         background-image: url(./t5/Icone/search.png);
+        margin-left: 3%;
+      }
+      .logout-button{ /* aggiunto */
+        background-image: url(./t5/Icone/logout.png); 
+        margin-left: 3%;
+      }
+      .storico-button{ /* aggiunto */
+        background-image: url(./t5/Icone/storico.png); 
         margin-left: 3%;
       }
       .CodeMirror {
@@ -364,39 +375,46 @@
             </div>
           </div>
 
+          <button id="storico" class="storico-button" title="Storico"></button> <!--aggiunto-->
           <button id="compileButton" class="compile-button" title="Compile"></button>
-          <button id="runButton" class="run-button" title="Run"></button>
-          <button id="coverageButton" class="coverage-button" title="Run with JaCoCo"></button>
+          <button id="runButton" class="run-button" title="Play/Submit"></button> <!-- modificato chiamato il pulsante Play/Submit prima era Run -->
+          <button id="coverageButton" class="coverage-button" title="Run"></button> <!-- modificato chiamato il pulsante Run, prima era Run with Jacoco -->
+          <button id="logout" class="logout-button" title="Logout"></button> <!--aggiunto-->
         </div>
         <textarea id="editor" name="editor">
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.AfterClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class NomeClasseTest {
-    @BeforeAll
+//scrivere al posto di "Classe" il nome della classe da testare
+public class TestClasse {
+    @BeforeClass
     public static void setUpClass() {
         // Eseguito una volta prima dell'inizio dei test nella classe
         // Inizializza risorse condivise o esegui altre operazioni di setup
     }
-    @AfterAll
+              
+    @AfterClass
     public static void tearDownClass() {
         // Eseguito una volta alla fine di tutti i test nella classe
         // Effettua la pulizia delle risorse condivise o esegui altre operazioni di teardown
     }
-    @BeforeEach
+              
+    @Before
     public void setUp() {
         // Eseguito prima di ogni metodo di test
         // Preparazione dei dati di input specifici per il test
     }
-    @AfterEach
+              
+    @After
     public void tearDown() {
         // Eseguito dopo ogni metodo di test
         // Pulizia delle risorse o ripristino dello stato iniziale
     }
+              
     @Test
     public void testMetodo() {
         // Preparazione dei dati di input
@@ -404,6 +422,7 @@ public class NomeClasseTest {
         // Verifica l'output o il comportamento atteso
         // Utilizza assert per confrontare il risultato atteso con il risultato effettivo
     }
+              
     // Aggiungi altri metodi di test se necessario
 }
         </textarea>
@@ -437,6 +456,9 @@ public class NomeClasseTest {
   </div>
 
     <script>
+      var turno = 0; // numero di turni giocati fino ad ora
+      var perc_robot = '0'; // percentuale di copertura del robot scelto
+
       const getCookie = (name) => {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -540,7 +562,7 @@ public class NomeClasseTest {
         var idTurno = localStorage.getItem("roundId");
         var nameCUT= localStorage.getItem("classe");
         var robotScelto = localStorage.getItem("robot");
-        var difficolta = "easy";
+        var difficolta = localStorage.getItem("difficulty");
 
         if(idUtente == null || idPartita == null || idTurno == null || nameCUT == null || robotScelto == null) window.location.href = "/main";
 
@@ -597,6 +619,98 @@ public class NomeClasseTest {
         function getCUTContent() {
           return sidebarEditor.getValue(); // Restituisce il contenuto del codice nella CUT
         }
+
+        //funzione handler del tasto di logout
+        var logout = document.getElementById("logout");
+        logout.addEventListener("click", function(){
+          if(confirm("Sei sicuro di voler effettuare il logout?")){
+            fetch('http://localhost/logout', {
+                method: 'GET',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Richiesta logout non andata a buon fine');
+                }
+                else{
+                  console.log("stai per essere reindirizzato alla pagina di login");
+                  window.location.href = "/login";
+                }
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+          }
+        });
+
+        //funzione handler del tasto di storico
+        var storico = document.getElementById("storico");
+        storico.addEventListener("click", function(){
+          if(turno == 0){
+            async function valRob() {             
+              try {
+                let response = await fetch('http://localhost:3000/robots?testClassId='+localStorage.getItem("classe")+'&type='+localStorage.getItem("robot")+'&difficulty='+localStorage.getItem("difficulty"), 
+                { method: 'GET' });
+                if (!response.ok) {
+                  throw new Error('Richiesta risultati robot non andata a buon fine');
+                }
+                let data = await response.json();
+                perc_robot = data.scores;
+              } catch (error) {
+                console.error('Error:', error);
+              }
+              alert("Non esiste ancora uno storico dei test\nPercentuale di copertura da battere: "+perc_robot);
+            }
+
+            valRob();
+          }
+          else{
+            var dastampare = "Percentuale di copertura da battere: " + perc_robot + "\n";
+            var testi = "\n";
+
+            async function fetchTurns(turno) {
+              for(var i=1; i<=turno; i++){
+                if(localStorage.getItem("gameId") == "null"){
+                  var val = parseInt(localStorage.getItem("turnId"))-turno+i;
+                }
+                else{
+                  var val = parseInt(localStorage.getItem("turnId"))-turno+(i-1);
+                }
+                
+                try {
+                  let response = await fetch('http://localhost:3000/turns/'+val.toString(), { method: 'GET' });
+                  if (!response.ok) {
+                    throw new Error('Richiesta risultati turno non andata a buon fine');
+                  }
+                  let data = await response.json();
+                  if(data.isWinner)
+                    dastampare += "Tentativo " + i.toString() + ": Vittoria\n" + "Percentuale di copertura ottenuta: " + data.scores + "\n";
+                  else
+                    dastampare += "Tentativo " + i.toString() + ": Sconfitta\n" + "Percentuale di copertura ottenuta: " + data.scores + "\n";
+                  console.log(data.scores);
+                } catch (error) {
+                  console.error('Error:', error);
+                }
+
+                try{
+                  let response = await fetch('http://localhost:3080/tests/'+val.toString() + '/Test' + localStorage.getItem("classe"), { method: 'GET' });
+                  if (!response.ok) {
+                    throw new Error('Richiesta risultati turno non andata a buon fine');
+                  }
+                  let data = await response.text();
+                  testi += "Codice di test sottoposto al tentativo " + i.toString() + ":\n" + data + "\n\n";
+                } catch (error){
+                  console.error('Error:', error);
+                }
+
+              }
+              consoleArea.setValue(dastampare+testi);
+              console.log(dastampare);
+            }
+
+            fetchTurns(turno);
+          }
+        });
+
         // Ottieni il riferimento al pulsante compilando l'ID
         var compileButton = document.getElementById("compileButton");
 
@@ -605,7 +719,7 @@ public class NomeClasseTest {
           // Logica da eseguire quando il pulsante viene cliccato
           // Ad esempio, esegui una chiamata AJAX al tuo controller Spring per inviare i dati
           var formData = new FormData();
-          formData.append("testingClassName", "NomeClasseTest.java");
+          formData.append("testingClassName", "Test" + localStorage.getItem("classe") + ".java");
           formData.append("testingClassCode", editor.getValue());
           formData.append("underTestClassName", localStorage.getItem("classe")+".java");
           formData.append("underTestClassCode", sidebarEditor.getValue());
@@ -654,11 +768,12 @@ public class NomeClasseTest {
         //   });
         // });
         $(document).ready(function() {
-          if(localStorage.getItem("turnId") == null) {
-            alert("Hai già sottomesso il tuo tentativo!");
+          if(localStorage.getItem("gameId") == "null") { //controllo game invece che turn
+            alert("Impossibile effettuare un nuovo tentativo: Hai già vinto!");
           } else {
+            var risp; // variabile per salvare response
             var formData = new FormData();
-            formData.append("testingClassName", "NomeClasseTest.java");
+            formData.append("testingClassName", "Test" + localStorage.getItem("classe") + ".java");
             formData.append("testingClassCode", editor.getValue());
             formData.append("underTestClassName", localStorage.getItem("classe")+".java");
             formData.append("underTestClassCode", sidebarEditor.getValue());
@@ -668,7 +783,7 @@ public class NomeClasseTest {
             formData.append("gameId",localStorage.getItem("gameId"));
             formData.append("testClassId", localStorage.getItem("classe"));
             formData.append("difficulty", localStorage.getItem("difficulty"));
-            formData.append("type", "randoop");
+            formData.append("type", localStorage.getItem("robot")); // modificato
             $.ajax({
               url: "http://localhost/api/run", // con questa verso il task 6, si salva e conclude la partita e si decreta il vincitore
               type: "POST",
@@ -679,20 +794,150 @@ public class NomeClasseTest {
               success: function(response) {
                 console.log(response);
 
+                risp = response;
+
+                perc_robot = response.robotScore.toString();
+              
                 consoleArea.setValue(response.outCompile);
                 highlightCodeCoverage($.parseXML(response.coverage));
-                consoleArea2.setValue(`Esito Risultati (percentuale di linee coperte)
+                /*consoleArea2.setValue(`Esito Risultati (percentuale di linee coperte)
   Il tuo punteggio: ${response.score.toString()}% LOC
-  Il punteggio del robot: ${response.robotScore.toString()}% LOC`);
+  Il punteggio del robot: ${response.robotScore.toString()}% LOC`);*/
                 
                 alert(response.win == true ? "Hai vinto!" : "Hai perso!");
-                localStorage.clear();
+                //localStorage.clear();
+                if(response.win == true){
+                  turno++;  // incremento il numero di turno giocati fino ad ora
+                  //localStorage.clear();
+                  localStorage.setItem("gameId",null); // setto gameId null invece che tutto
+                  //console.log(localStorage.getItem("gameId"));
+                }
+                else{
+                  //localStorage.setItem("gameId",(parseInt(localStorage.getItem("gameId"))+1).toString());
+                  //localStorage.setItem("roundId",(parseInt(localStorage.getItem("roundId"))+1).toString());
+                  //localStorage.setItem("turnId",(parseInt(localStorage.getItem("turnId"))+1).toString()); // vedere che fare
+                  //console.log(localStorage.getItem("turnId"));
+
+                  $.ajax({
+                    url:'http://localhost/api/save-data',
+                    data: {
+                      playerId: parseJwt(getCookie("jwt")).userId,
+                      classe: localStorage.getItem("classe"),
+                      robot: localStorage.getItem("robot"),
+                      difficulty: localStorage.getItem("difficulty")
+                    },
+                    type:'POST',
+                    success: function (response) {
+                      // Gestisci la risposta del server qui
+                      localStorage.setItem("gameId", response.game_id);
+                      localStorage.setItem("turnId", response.turn_id);
+                      localStorage.setItem("roundId", response.round_id);
+                      console.log(localStorage.getItem("turnId"));
+                      turno++; // incremento il numero di turno giocati fino ad ora
+                      //window.location.href = "/editor";
+                    },
+                    dataType: "json",
+                    error: function (error) {
+                      console.error('Errore nell invio dei dati');
+                      alert("Dati non inviati con successo");
+                      // Gestisci l'errore qui
+                    }
+                  });
+
+                }
               },
               error: function() {
                 // Gestisci l'errore, ad esempio mostra un messaggio di errore
                 console.log("Errore durante l'invio della partita.");
               }
-            }); 
+            });
+            
+            //Da qui fino a FINE è stato aggiunto
+            //aggiungere cose per copertura evosuite
+            var classe = 'VolumeT8/FolderTreeEvo/' + localStorage.getItem("classe") + '/' + localStorage.getItem("classe") + 'SourceCode/' + localStorage.getItem("classe") + '.java';
+
+            var test = '/VolumeT8/FolderTreeEvo/Tests/' + localStorage.getItem("turnId");
+
+            // Definisci il percorso dell'API
+            var apiBaseUrl = 'http://localhost:3080/api/';
+
+            // Concatena il percorso della classe al percorso dell'API
+            var url = apiBaseUrl + classe + '+' + test + '+/app';
+
+            const javaCode = editor.getValue(); // codice della classe di test
+
+            fetch(url, { 
+                  method: 'POST', 
+                  headers: { 'Content-Type': 'text/plain' },
+                  body: javaCode 
+              }) // resa funzione una POST
+              .then(function(response) {
+                if (!response.ok) {
+                  throw new Error('Errore nella richiesta HTTP: ' + response.status);
+                  console.log('Errore nella richiesta HTTP: ', response.status);
+                }
+
+                return response.blob();
+              })
+              .then(function (blob) {//aggiunta da noi
+                var reader = new FileReader();
+
+                reader.onload = function () {
+                  var csvContent = reader.result;
+
+                  console.log(csvContent);
+
+                  // Dividi il contenuto CSV in righe separate
+                  var lines = csvContent.split('\n');
+
+                  if (lines.length > 1) {
+                    // Dividi la seconda riga in elementi separati da virgole
+                    var secondRowElements = lines[1].split(',');
+                    var terzoRowElements = lines[2].split(',');
+                    var quartoRowElements = lines[3].split(',');
+                    var quintoRowElements = lines[4].split(',');
+                    var sestoRowElements = lines[5].split(',');
+                    var settimoRowElements = lines[6].split(',');
+                    var ottavoRowElements = lines[7].split(',');
+                    var nonoRowElements = lines[8].split(',');
+
+                    if (secondRowElements.length > 2) {
+                      // Estrai il terzo elemento (indice 2) della seconda riga
+                      var terzoElemento = parseInt(secondRowElements[2]*100);
+                      var terzoElemento1 = parseInt(terzoRowElements[2]*100);
+                      var terzoElemento2 = parseInt(quartoRowElements[2]*100);
+                      var terzoElemento3 = parseInt(quintoRowElements[2]*100);
+                      var terzoElemento4 = parseInt(sestoRowElements[2]*100);
+                      var terzoElemento5 = parseInt(settimoRowElements[2]*100);
+                      var terzoElemento6 = parseInt(ottavoRowElements[2]*100);
+                      var terzoElemento7 = parseInt(nonoRowElements[2]*100);
+
+                      console.log('Terzo elemento della seconda riga:', terzoElemento);
+                      consoleArea2.setValue(`Esito Risultati (percentuale di linee coperte)
+Il tuo punteggio EvoSuite: ${terzoElemento}% LOC
+Il tuo punteggio Jacoco: ${risp.score.toString()}% LOC
+Il punteggio del robot: ${risp.robotScore.toString()}% LOC
+Informazioni aggiuntive di copertura:
+Il tuo punteggio EvoSuite: ${terzoElemento1}% Branch
+Il tuo punteggio EvoSuite: ${terzoElemento2}% Exception
+Il tuo punteggio EvoSuite: ${terzoElemento3}% WeakMutation
+Il tuo punteggio EvoSuite: ${terzoElemento4}% Output
+Il tuo punteggio EvoSuite: ${terzoElemento5}% Method
+Il tuo punteggio EvoSuite: ${terzoElemento6}% MethodNoException
+Il tuo punteggio EvoSuite: ${terzoElemento7}% CBranch`);
+                    }
+                  }
+
+                };
+
+                reader.readAsText(blob);
+              })
+              .catch(function (error) {
+                console.log('Si è verificato un errore:', error);
+              });
+
+              //FINE
+
           }
         });
       });
@@ -763,7 +1008,7 @@ public class NomeClasseTest {
         function processJaCoCoReport() {
           // Effettua una richiesta al tuo controller Spring per ottenere il file di output di JaCoCo
           var formData = new FormData();
-          formData.append("testingClassName", "NomeClasseTest.java");
+          formData.append("testingClassName", "Test" + localStorage.getItem("classe") + ".java");
           formData.append("testingClassCode", editor.getValue());
           formData.append("underTestClassName", localStorage.getItem("classe")+".java");
           formData.append("underTestClassCode", sidebarEditor.getValue());
@@ -785,6 +1030,88 @@ public class NomeClasseTest {
               console.log("Errore durante il recupero del file di output di JaCoCo.");
             }
           });
+
+          //aggiungere cose per copertura evosuite
+          var classe = 'VolumeT8/FolderTreeEvo/' + localStorage.getItem("classe") + '/' + localStorage.getItem("classe") + 'SourceCode/' + localStorage.getItem("classe") + '.java'; //sidebarEditor.getValue(); // Assumendo che rappresenti la classe
+
+          var test = '/VolumeT8/FolderTreeEvo/Tests/' + localStorage.getItem("turnId");
+
+          // Definisci il percorso dell'API
+          var apiBaseUrl = 'http://localhost:3080/api/';
+
+          // Concatena il percorso della classe al percorso dell'API
+          var url = apiBaseUrl + classe + '+' + test + '+/app';
+
+          const javaCode = editor.getValue(); // codice della classe di test
+
+          fetch(url, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'text/plain' },
+                body: javaCode 
+            }) // resa funzione una POST
+            .then(function(response) {
+              if (!response.ok) {
+                throw new Error('Errore nella richiesta HTTP: ' + response.status);
+                console.log('Errore nella richiesta HTTP: ', response.status);
+              }
+
+              return response.blob();
+            })
+            .then(function (blob) {//aggiunta da noi
+              var reader = new FileReader();
+
+              reader.onload = function () {
+                var csvContent = reader.result;
+
+                console.log(csvContent);
+
+                // Dividi il contenuto CSV in righe separate
+                var lines = csvContent.split('\n');
+
+                if (lines.length > 1) {
+                  // Dividi la seconda riga in elementi separati da virgole
+                  var secondRowElements = lines[1].split(',');
+                  var terzoRowElements = lines[2].split(',');
+                  var quartoRowElements = lines[3].split(',');
+                  var quintoRowElements = lines[4].split(',');
+                  var sestoRowElements = lines[5].split(',');
+                  var settimoRowElements = lines[6].split(',');
+                  var ottavoRowElements = lines[7].split(',');
+                  var nonoRowElements = lines[8].split(',');
+
+                  if (secondRowElements.length > 2) {
+                    // Estrai il terzo elemento (indice 2) della seconda riga
+                    var terzoElemento = parseInt(secondRowElements[2]*100);
+                    var terzoElemento1 = parseInt(terzoRowElements[2]*100);
+                    var terzoElemento2 = parseInt(quartoRowElements[2]*100);
+                    var terzoElemento3 = parseInt(quintoRowElements[2]*100);
+                    var terzoElemento4 = parseInt(sestoRowElements[2]*100);
+                    var terzoElemento5 = parseInt(settimoRowElements[2]*100);
+                    var terzoElemento6 = parseInt(ottavoRowElements[2]*100);
+                    var terzoElemento7 = parseInt(nonoRowElements[2]*100);
+
+                    console.log('Terzo elemento della seconda riga:', terzoElemento);
+                    consoleArea.setValue(`Esito Risultati (percentuale di linee coperte)
+Il tuo punteggio: ${terzoElemento}% LOC
+Informazioni aggiuntive di copertura:
+Il tuo punteggio EvoSuite: ${terzoElemento1}% Branch
+Il tuo punteggio EvoSuite: ${terzoElemento2}% Exception
+Il tuo punteggio EvoSuite: ${terzoElemento3}% WeakMutation
+Il tuo punteggio EvoSuite: ${terzoElemento4}% Output
+Il tuo punteggio EvoSuite: ${terzoElemento5}% Method
+Il tuo punteggio EvoSuite: ${terzoElemento6}% MethodNoException
+Il tuo punteggio EvoSuite: ${terzoElemento7}% CBranch`);
+                  }
+                }
+
+              };
+
+              reader.readAsText(blob);
+            })
+            .catch(function (error) {
+              console.log('Si è verificato un errore:', error);
+            });
+
         }
         function highlightCodeCoverage(reportContent) {
           // Analizza il contenuto del file di output di JaCoCo per individuare le righe coperte, non coperte e parzialmente coperte

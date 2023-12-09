@@ -32,7 +32,7 @@ cat  >>pom.txt << EOF
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>$NOME_PACKAGE</groupId>
+  <groupId>$NOME_CLASSE</groupId>
   <artifactId>$NOME_CLASSE</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -66,7 +66,7 @@ echo "iniziamo a generare i test"
 
 echo "Test 1"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes
 
 echo "facciamo partire il test"
 
@@ -74,11 +74,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I0
 
@@ -88,7 +88,7 @@ sleep 1
 
 echo "Test 2"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=LINE
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=LINE
 
 echo "facciamo partire il test"
 
@@ -96,11 +96,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I1
 
@@ -108,7 +108,7 @@ mv evosuite-tests I1
 
 echo "Test 3"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=BRANCH
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=BRANCH
 
 echo "facciamo partire il test"
 
@@ -116,11 +116,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I2
 
@@ -128,7 +128,7 @@ mv evosuite-tests I2
 
 echo "Test 4"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=WEAKMUTATION
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=WEAKMUTATION
 
 echo "facciamo partire il test"
 
@@ -136,11 +136,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I3
 
@@ -148,7 +148,7 @@ mv evosuite-tests I3
 
 echo "Test 5"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=OUTPUT
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=OUTPUT
 
 echo "facciamo partire il test"
 
@@ -156,11 +156,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I4
 
@@ -168,7 +168,7 @@ mv evosuite-tests I4
 
 echo "Test 6"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=METHOD
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=METHOD
 
 echo "facciamo partire il test"
 
@@ -176,11 +176,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I5
 
@@ -188,7 +188,7 @@ mv evosuite-tests I5
 
 echo "Test 7"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=LINE:BRANCH
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=LINE:BRANCH
 
 echo "facciamo partire il test"
 
@@ -196,11 +196,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I6
 
@@ -208,7 +208,7 @@ mv evosuite-tests I6
 
 echo "Test 8"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=OUTPUT:LINE
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=OUTPUT:LINE
 
 echo "facciamo partire il test"
 
@@ -216,11 +216,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I7
 
@@ -228,7 +228,7 @@ mv evosuite-tests I7
 
 echo "Test 9"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=WEAKMUTATION:BRANCH
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=WEAKMUTATION:BRANCH
 
 echo "facciamo partire il test"
 
@@ -236,11 +236,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I8
 
@@ -248,7 +248,7 @@ mv evosuite-tests I8
 
 echo "Test 10"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=WEAKMUTATION:OUTPUT
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=WEAKMUTATION:OUTPUT
 
 echo "facciamo partire il test"
 
@@ -256,11 +256,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I9
 
@@ -268,7 +268,7 @@ mv evosuite-tests I9
 
 echo "Test 11"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=CBRANCH:LINE
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=CBRANCH:LINE
 
 echo "facciamo partire il test"
 
@@ -276,11 +276,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I10
 
@@ -288,7 +288,7 @@ mv evosuite-tests I10
 
 echo "Test 12"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=LINE:BRANCH:EXCEPTION
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=LINE:BRANCH:EXCEPTION
 
 echo "facciamo partire il test"
 
@@ -296,11 +296,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I11
 
@@ -308,7 +308,7 @@ mv evosuite-tests I11
 
 echo "Test 13"
 
-$EVOSUITE -class $NOME_PACKAGE.$NOME_CLASSE -projectCP target/classes -Dcriterion=WEAKMUTATION:LINE:OUTPUT
+$EVOSUITE -class $NOME_CLASSE -projectCP target/classes -Dcriterion=WEAKMUTATION:LINE:OUTPUT
 
 echo "facciamo partire il test"
 
@@ -316,11 +316,11 @@ mvn dependency:copy-dependencies
 
 export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
 
-javac evosuite-tests/$NOME_PACKAGE/*.java
+javac evosuite-tests/*.java
 
-java org.junit.runner.JUnitCore $NOME_PACKAGE.${NOME_CLASSE}_ESTest
+java org.junit.runner.JUnitCore ${NOME_CLASSE}_ESTest
 
-$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
+$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:evosuite-tests
 
 mv evosuite-report I12
 

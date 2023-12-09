@@ -1,24 +1,31 @@
-# Task 10 - Gruppo 40
+# Task 11 - Gruppo 41
 Componenti:
-- Pasquale Riello - M63/1516
-- Lorenzo Pannone - M63/1492
+- Luigi Cecere - M63/1413
+- Chiara Capocello - M63/1451
+- Giovanni Gentile - M63/1450
+- Michelangelo Formato - M63/1519
 
 # GUIDA ALL'INSTALLAZIONE
 
 ## PASSO 1
-Si deve avviare lo script "installer.bat". Saranno effettuate le seguenti operazioni:
-1) creazione della rete "global-network" comune a tutti i container
-2) creazione del volume "VolumeT9" comune ai Task 1 e 9
-3) installazione di ogni singolo container
+Scaricare Docker Desktop per il proprio sistema operativo.
+
+## PASSO 2
+Si deve avviare lo script "installer.bat" se si sta usando una distribuzione Windows oppure "installermac.sh" nel caso si utilizzi macOS o una distro di Linux.
+Per MacOS - eseguire nella cartella dove è presente il file ”installermac.sh” il comando "chmod +x installermac.sh" per renderlo eseguibile, e poi "./installermac.sh" per eseguirlo.
+Tali script dovranno essere avviati unicamnete con Docker in esecuzione, altrimenti l'installazione non partirà. Saranno effettuate le seguenti operazioni:
+1) Creazione della rete "global-network" comune a tutti i container.
+2) Creazione del volume "VolumeT9" comune ai Task 1 e 9 e del volume "VolumeT8" comune ai Task 1 e 8.
+3) Creazione dei singoli container in Docker desktop.
 
 NOTA: il container relativo al Task 9 ("Progetto-SAD-G19-master") si sospenderà autonomamente dopo l'avvio. Esso viene utilizzato solo per "popolare" il volume "VolumeT9" condiviso con il Task 1.
 
-## PASSO 2
+## PASSO 3
 Si deve configurare il container "manvsclass-mongo_db-1" così come descritto anche nella documentazione del Task 1.
 Per fare ciò bisogna fare le seguenti operazioni:
-1) posizionarsi all'interno del terminale del container
-2) digitare il comando "mongosh"
-3) digitare i seguenti comandi:
+1) Posizionarsi all'interno del terminale del container
+2) Digitare il comando "mongosh"
+3) Digitare i seguenti comandi:
 
         use manvsclass
         db.createCollection("ClassUT");
@@ -30,17 +37,20 @@ Per fare ciò bisogna fare le seguenti operazioni:
         db.interaction.createIndex({ name: "text" })
         db.Admin.createIndex({username: 1})
 
-## PASSO 3
-L'intera applicazione è adesso pienamente configurata e raggiungibile sulla porta :80.
+L'intera applicazione è adesso pienamente configurata e raggiungibile sulla porta :80. Per una guida all'installazione e all'utilizzo più completa consultare la documentazione al capitolo 8.
 
 # VIDEO DIMOSTRAZIONE
-## Studente
-
-
-https://github.com/Testing-Game-SAD-2023/T10-G40/assets/33938788/c6cd06c7-5d3a-4988-a651-7e1dc5896909
-
-
-
 ## Admin
 
-https://github.com/Testing-Game-SAD-2023/T10-G40/assets/33938788/da3e5d04-7106-40ae-a0f3-1b7d6923c0cd
+
+
+https://github.com/Testing-Game-SAD-2023/T11-G41/assets/128593973/e4e1ef4d-f2f3-42b2-8be4-ef9caa219b93
+
+
+
+## Player
+
+
+
+https://github.com/Testing-Game-SAD-2023/T11-G41/assets/128593973/c94398b2-178e-4b7f-a6d6-685c2689c03c
+

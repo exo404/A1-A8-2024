@@ -54,10 +54,17 @@ function Handlebuttonclass(id, button) {
   });
 }
 
-function Handlebuttonrobot(id, button) {
+function Handlebuttonrobot(id, button, rob, size) { //modificato
   $(document).ready(function () {
-    robot = "randoop";
-    difficulty = id;
+    robot = rob;
+    if(robot == "evosuite"){ // aggiunto
+      difficulty = parseInt(id)-parseInt(size)/2; // devo prendere l'id attuale meno la metà della grandezza totale del vettore di robot
+      difficulty = difficulty.toString();
+    }
+    else{ // aggiunto
+      difficulty = id;
+    }
+    //difficulty = id;
     console.log('Hai cliccato sul bottone del robot con id: ' + robot);
 
     // Se il bottone precedentemente selezionato è diverso da null
@@ -203,7 +210,23 @@ function downloadFile() {
 }
 
 function redirectToLogin() {
-  window.location.href = "/login";
+  if(confirm("Sei sicuro di voler effettuare il logout?")){
+    fetch('http://localhost/logout', {
+        method: 'GET',
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Richiesta logout non andata a buon fine');
+        }
+        else{
+          console.log("stai per essere reindirizzato alla pagina di login");
+          window.location.href = "/login";
+        }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
 }
 
 function saveLoginData() {

@@ -6,7 +6,9 @@ NOME_PACKAGE=$(tail -n 1 "output.txt")
 echo "nome classe :$NOME_CLASSE"
 echo "nome package :$NOME_PACKAGE"
 export EVOSUITE="java -jar $(pwd)/evosuite-1.0.6.jar"
-filename="/opt/Prototipo2.0/Prototipo2.0/invio.txt"
+filename=$PERCORSO/invio.txt
+
+SALVATAGGIO="$(realpath -s "$(dirname "$0")"/../)"	#aggiunto path della cartella 1 livello sopra
 
 ##############################
 
@@ -22,27 +24,31 @@ for var in "$@"; do
 echo "Il file $filename è stato creato con successo."
 	((cont++))
 	export CLASSPATH=target/classes:evosuite-standalone-runtime-1.0.6.jar:I${var}/evosuite-tests:target/dependency/junit-4.13.1.jar:target/dependency/hamcrest-core-1.3.jar
-	javac I${var}/evosuite-tests/$NOME_PACKAGE/*.java
+	javac I${var}/evosuite-tests/*.java
 
-	$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=LINE
+	$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=LINE
 	echo "coverage 1  finita" >> "$filename"
-	$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=BRANCH
+	$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=BRANCH
 	echo "coverage 2 finita" >> "$filename"
-	$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=EXCEPTION
+	$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=EXCEPTION
 	echo "coverage 3 finita" >> "$filename"
-	$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=WEAKMUTATION
+	$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=WEAKMUTATION
 	echo "coverage 4  finita" >> "$filename"
-	$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=OUTPUT
+	$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=OUTPUT
 	echo "coverage 5  finita" >> "$filename"
-	$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=METHOD
+	$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=METHOD
 	echo "coverage 6  finita" >> "$filename"
-	$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=METHODNOEXCEPTION
+	$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=METHODNOEXCEPTION
 	echo "coverage 7  finita" >> "$filename"
-	$EVOSUITE -measureCoverage -class $NOME_PACKAGE.$NOME_CLASSE -Djunit=$NOME_PACKAGE.${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=CBRANCH
+	$EVOSUITE -measureCoverage -class $NOME_CLASSE -Djunit=${NOME_CLASSE}_ESTest -projectCP $PERCORSO/target/classes/:I${var}/evosuite-tests -Dcriterion=CBRANCH
 	echo "coverage 8  finita" >> "$filename"
-	mv evosuite-report/statistics.csv /data/$NOME_CLASSE/RobotTest/EvoSuiteTest/0${cont}Level/TestReport
+	
+	mkdir -p $SALVATAGGIO/FolderTreeEvo/$NOME_CLASSE/RobotTest/EvoSuiteTest/0${cont}Level/TestReport	#aggiunto
+	mkdir -p $SALVATAGGIO/FolderTreeEvo/$NOME_CLASSE/RobotTest/EvoSuiteTest/0${cont}Level/TestSourceCode	#aggiunto
 
-	mv I${var}/evosuite-tests/$NOME_PACKAGE /data/$NOME_CLASSE/RobotTest/EvoSuiteTest/0${cont}Level/TestSourceCode
+	mv evosuite-report/statistics.csv $SALVATAGGIO/FolderTreeEvo/$NOME_CLASSE/RobotTest/EvoSuiteTest/0${cont}Level/TestReport	#modificato
+
+	mv I${var}/evosuite-tests/$NOME_CLASS $SALVATAGGIO/FolderTreeEvo/$NOME_CLASSE/RobotTest/EvoSuiteTest/0${cont}Level/TestSourceCode	#modificato
 
 
 done
