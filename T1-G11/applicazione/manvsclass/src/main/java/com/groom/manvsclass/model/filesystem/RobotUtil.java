@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.io.ObjectInputFilter.Config;
 import java.nio.file.Files;
@@ -382,6 +383,15 @@ public class RobotUtil {
 		Path directoryTest = Paths.get("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest");
 		
 		caricaFile(fileNameTest, directoryTest, testFile);
+		
+		File fileZipDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/");
+		File fileZip[] = fileZipDir.listFiles();
+		String nomeAttuale = fileZip[0].getAbsolutePath().toString();
+        String nuovoNome = "/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/" + className + "TestRandoop.zip";
+
+        File zipAttuale = new File(nomeAttuale);
+        File zipNuova = new File(nuovoNome);
+        boolean rinominato = zipAttuale.renameTo(zipNuova);
 
 		//Estrae i test dall'archivio caricato
 		RobotUtil.unzip(className);
