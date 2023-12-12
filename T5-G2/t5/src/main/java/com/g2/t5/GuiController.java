@@ -104,14 +104,16 @@ public class GuiController {
         return responseEntity.getBody();
     }
 
-    @GetMapping("/main")
-    public String GUIController(Model model, @CookieValue(name = "jwt", required = false) String jwt) {
+    @GetMapping("{language}/main")
+    public String GUIController(    @PathVariable String language,
+                                    Model model,
+                                    @CookieValue(name = "jwt", required = false) String jwt) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<String, String>();
         formData.add("jwt", jwt);
 
         Boolean isAuthenticated = restTemplate.postForObject("http://t23-g1-app-1:8080/validateToken", formData, Boolean.class);
 
-        if(isAuthenticated == null || !isAuthenticated) return "redirect:/login";
+        if(isAuthenticated == null || !isAuthenticated) return "redirect:/" + language + "/login";
 
         // fileController.listFilesInFolder("/app/AUTName/AUTSourceCode");
         // int size = fileController.getClassSize();
@@ -158,7 +160,7 @@ public class GuiController {
         model.addAttribute("hashMap2", robotList);
 
         //model.addAttribute("evRobot", evosuiteLevel); //aggiunto
-        return "main";
+        return langauge + "/main";
     }
 
     // @PostMapping("/sendVariable")
@@ -174,14 +176,16 @@ public class GuiController {
     // return ResponseEntity.ok("Dati ricevuti con successo");
     // }
 
-    @GetMapping("/report")
-    public String reportPage(Model model, @CookieValue(name = "jwt", required = false) String jwt) {
+    @GetMapping("{language}/report")
+    public String reportPage(   @PathVariable String language,
+                                Model model,
+                                @CookieValue(name = "jwt", required = false) String jwt) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<String, String>();
         formData.add("jwt", jwt);
 
         Boolean isAuthenticated = restTemplate.postForObject("http://t23-g1-app-1:8080/validateToken", formData, Boolean.class);
 
-        if(isAuthenticated == null || !isAuthenticated) return "redirect:/login";
+        if(isAuthenticated == null || !isAuthenticated) return "redirect:/" + language + "/login";
         // valueclass = hashMap.get(myClass);
         // valuerobot = hashMap2.get(myRobot);
 
@@ -189,7 +193,7 @@ public class GuiController {
         // System.out.println("Il VALORE DELLA CLASSE " + valueclass + " " + myClass);
         // model.addAttribute("classe", valueclass);
         // model.addAttribute("robot", valuerobot);
-        return "report";
+        return language + "/report";
     }
 
     // @PostMapping("/login-variabiles")
@@ -270,20 +274,22 @@ public class GuiController {
     // return "change_password";
     // }
 
-    @GetMapping("/editor")
-    public String editorPage(Model model, @CookieValue(name = "jwt", required = false) String jwt) {
+    @GetMapping("{language}/editor")
+    public String editorPage(   @PathVariable String language,
+                                Model model,
+                                @CookieValue(name = "jwt", required = false) String jwt) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<String, String>();
         formData.add("jwt", jwt);
 
         Boolean isAuthenticated = restTemplate.postForObject("http://t23-g1-app-1:8080/validateToken", formData, Boolean.class);
 
-        if(isAuthenticated == null || !isAuthenticated) return "redirect:/login";
+        if(isAuthenticated == null || !isAuthenticated) return "redirect:/" + language + "/login";
         // model.addAttribute("robot", valuerobot);
         // model.addAttribute("classe", valueclass);
 
         // model.addAttribute("gameIDj", globalID);
 
-        return "editor";
+        return language + "/editor";
     }
 
 }

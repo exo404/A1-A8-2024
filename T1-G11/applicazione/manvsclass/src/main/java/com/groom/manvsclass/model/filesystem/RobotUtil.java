@@ -6,18 +6,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.io.ObjectInputFilter.Config;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.formData;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -33,54 +27,6 @@ import org.jsoup.parser.Parser;
 
 public class RobotUtil {
 
-
-	//---------------------------------FUNZIONE UNZIP
-	public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-		File destFile = new File(destinationDir, zipEntry.getName());
-	
-		String destDirPath = destinationDir.getCanonicalPath();
-		String destFilePath = destFile.getCanonicalPath();
-	
-		if (!destFilePath.startsWith(destDirPath + File.separator)) {
-			throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-		}
-	
-		return destFile;
-	}
-	public static void unzip(String className) throws IOException {
-		String fileZip = "/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/" + className + "TestRandoop.zip";
-		File destDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/");
-
-		byte[] buffer = new byte[1024];
-		ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-		ZipEntry zipEntry = zis.getNextEntry();
-		while (zipEntry != null) {
-			File newFile = newFile(destDir, zipEntry);
-			if (zipEntry.isDirectory()) {
-				if (!newFile.isDirectory() && !newFile.mkdirs()) {
-					throw new IOException("Failed to create directory " + newFile);
-				}
-			} else {
-				// Aggiustamento per archivi creati con Windows
-				File parent = newFile.getParentFile();
-				if (!parent.isDirectory() && !parent.mkdirs()) {
-					throw new IOException("Failed to create directory " + parent);
-				}
-			
-				// Scrittura del contenuto del file
-				FileOutputStream fos = new FileOutputStream(newFile);
-				int len;
-				while ((len = zis.read(buffer)) > 0) {
-					fos.write(buffer, 0, len);
-				}
-				fos.close();
-			}
-			zipEntry = zis.getNextEntry();
-		}
-		zis.closeEntry();
-		zis.close();
-	}
-	//--------------------------------------------------
 	/**
 	 * @param path Il percorso del file XML contenente le informazioni di copertura.
 	 * @return La percentuale di copertura delle linee.
@@ -140,7 +86,19 @@ public class RobotUtil {
 		return Math.round(elemento * 100);
 	}
 
-	public static void caricaFile(String fileName, Path directory, MultipartFile file) throws IOException{
+	/**
+	 * Genera e salva i file di robot e ne calcola la copertura delle linee.
+	 *
+	 * @param fileName      Il nome del file.
+	 * @param className         L'ID della classe di test.
+	 * @param formData Il file caricato.
+	 * @throws IOException Eccezione di IO.
+	 */
+	public static void generateAndSaveRobots(String fileName, String className, MultipartFile formData)
+			throws IOException {
+		// RANDOOP - T9
+		Path directory = Paths.get("/VolumeT9/app/FolderTree/" + className + "/" + className + "SourceCode");
+
 		try {
 			// Verifica se la directory esiste già
 			if (!Files.exists(directory)) {
@@ -154,10 +112,10 @@ public class RobotUtil {
 			System.out.println("Errore durante la creazione della directory: " + e.getMessage());
 		}
 		// Legge l'input stream del file caricato e lo copia nella directory specificata
-		try (InputStream inputStream = file.getInputStream()) {
+		try (InputStream inputStream = formData.getInputStream()) {
 			// Risolve il percorso completo del file all'interno della directory
 			// specificata.
-			// Viene utilizzato il metodo 'directory.resolve(fileNameClass)' per ottenere il
+			// Viene utilizzato il metodo 'directory.resolve(fileName)' per ottenere il
 			// percorso completo
 			// del file all'interno della directory 'directory'. Questo percorso completo
 			// sarà utilizzato
@@ -174,29 +132,49 @@ public class RobotUtil {
 			// chiusura dell'input stream dopo aver completato la copia
 			inputStream.close();
 		}
-	}
 
-	public static void outputProcess(Process process) throws IOException{
+		// creazione del processo esterno
+		ProcessBuilder processBuilder = new ProcessBuilder();
+
+		// con command si configura il comando del processo esterno per eseguire il file
+		// JAR 'Task9-G19-0.0.1-SNAPSHOT.jar'
+		// l'esecuzione avviene attraverso la JVM di Java.
+		// Il parametro "-jar" specifica l'esecuzione di un file JAR.
+
+		processBuilder.command("java", "-jar", "Task9-G19-0.0.1-SNAPSHOT.jar");
+
+		// La directory di lavoro per il processo esterno viene impostata su
+		// "/VolumeT9/app/" utilizzando
+		// questo metodo garantisce che il processo lavori nella directory desiderata
+		processBuilder.directory(new File("/VolumeT9/app/"));
+
+		// linea di debugg--potremmo anche commentarla
+		System.out.println("Prova");
+
+		// si avvia il processo
+		Process process = processBuilder.start();
+
 		// Legge l'output del processo esterno tramite un BufferedReader, che a sua
 		// volta usa
 		// un InputStreamReader per convertire i byte in caratteri. Il metodo
 		// 'process.getInputStream()'
 		// restituisce lo stream di input del processo esterno.
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		String line;
 
 		// All'interno del loop viene letta ogni linea disponibile finché il processo
 		// continua a produrre output.
-        while ((line = reader.readLine()) != null)
-            System.out.println(line);
-		
+		while ((line = reader.readLine()) != null)
+			System.out.println(line);
+
 		// funzionamento analogo al precedente, invece di leggere l'output leggiamo gli
 		// errori
-        reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        while ((line = reader.readLine()) != null)
-            System.out.println(line);
+		reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+		while ((line = reader.readLine()) != null)
+			System.out.println(line);
 
-        try {
+		try {
 			// Attende che il processo termini e restituisce il codice di uscita
 			int exitCode = process.waitFor();
 
@@ -206,18 +184,53 @@ public class RobotUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
 
-	public static void saveT4(int score, int livello, String className) throws IOException{
-		// Configurazione di un client HTTP
+		// Crea un oggetto File che rappresenta il percorso della directory contenente i
+		// risultati
+		// della generazione di robot da Randoop. Il percorso è costruito in base all'ID
+		// della classe di test 'className'.
+		File resultsDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest");
+
+		// Inizializza la variabile 'liv' a 0, rappresentante il massimo livello di
+		// robot prodotti da Randoop.
+		// Questo valore sarà aggiornato successivamente durante l'analisi dei
+		// risultati.
+		int liv = 0; // livelli di robot prodotti da randoop
+
+		File results[] = resultsDir.listFiles();
+		// Itera attraverso tutti i file nella directory dei risultati della generazione
+		// di robot da Randoop.
+
+		for (File result : results) {
+
+			// Calcola la copertura delle linee per ciascun file XML di copertura estraendo
+			// il valore dal file XML 'coveragetot.xml' nella directory corrispondente.
+			int score = LineCoverage(result.getAbsolutePath() + "/coveragetot.xml");
+			// Stampa le informazioni sulla copertura del livello
+			System.out.println(
+					result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
+
+			// Estrae il livello numerico dall'ultimo tratto del nome della directory,
+			// basandosi
+			// sulla convenzione specifica naming. Nella convenzione attuale, il livello è
+			// rappresentato da due caratteri numerici situati nelle posizioni -7 e -5
+			// rispetto
+			// alla fine del nome della directory
+
+			int livello = Integer.parseInt(
+					result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
+
+			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
+
+			// Configurazione di un client HTTP
 			HttpClient httpClient = HttpClientBuilder.create().build();
 
 			// Creazione di un oggetto HttpPost con l'URL "http://t4-g18-app-1:3000/robots"
 			HttpPost httpPost = new HttpPost("http://t4-g18-app-1:3000/robots");
-			
+
 			// Creazione di un array JSON per contenere le informazioni sui robot generati
 			JSONArray arr = new JSONArray();
-			
+
 			// Creazione di un oggetto JSON per rappresentare un singolo robot generato
 			JSONObject rob = new JSONObject();
 
@@ -257,185 +270,6 @@ public class RobotUtil {
 
 			// esegue la richiesta ed ottiene la risposta
 			HttpResponse response = httpClient.execute(httpPost);
-	}
-
-	/**
-	 * Genera e salva i file di robot e ne calcola la copertura delle linee.
-	 *
-	 * @param fileName      Il nome del file della classe.
-	 * @param className     Il nome della classe di test.
-	 * @param classFile     Il file caricato.
-	 * @throws IOException Eccezione di IO.
-	 */
-    public static void generateAndSaveRobots(String fileName, String className, MultipartFile classFile) throws IOException {
-
-        // RANDOOP - T9			    
-		Path directory = Paths.get("/VolumeT9/app/FolderTree/" + className + "/" + className + "SourceCode");
-		caricaFile(fileName, directory, classFile);
-		
-		//Randoop T9
-		// creazione del processo esterno di generazione dei test
-        ProcessBuilder processBuilder = new ProcessBuilder();
-
-		// con command si configura il comando del processo esterno per eseguire il file
-		// JAR 'Task9-G19-0.0.1-SNAPSHOT.jar'
-		// l'esecuzione avviene attraverso la JVM di Java.
-		// Il parametro "-jar" specifica l'esecuzione di un file JAR.
-        processBuilder.command("java", "-jar", "Task9-G19-0.0.1-SNAPSHOT.jar");
-
-		// La directory di lavoro per il processo esterno viene impostata su
-		// "/VolumeT9/app/" utilizzando
-		// questo metodo garantisce che il processo lavori nella directory desiderata
-        processBuilder.directory(new File("/VolumeT9/app/"));
-		
-		// linea di debugg--potremmo anche commentarla
-		System.out.println("Prova");
-		
-		// si avvia il processo
-        Process process = processBuilder.start();
-
-		//Legge l'output del processo appena creato
-		outputProcess(process);
-
-		// Crea un oggetto File che rappresenta il percorso della directory contenente i
-		// risultati
-		// della generazione di robot da Randoop. Il percorso è costruito in base all'ID
-		// della classe di test 'className'.
-		File resultsDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest");
-
-		// Inizializza la variabile 'liv' a 0, rappresentante il massimo livello di
-		// robot prodotti da Randoop.
-		// Questo valore sarà aggiornato successivamente durante l'analisi dei
-		// risultati.
-		int liv = 0; //livelli di robot prodotti da randoop
-
-        File results [] = resultsDir.listFiles();
-
-		// Itera attraverso tutti i file nella directory dei risultati della generazione
-		// di robot da Randoop.
-        for(File result : results) {
-
-			// Calcola la copertura delle linee per ciascun file XML di copertura estraendo
-			// il valore dal file XML 'coveragetot.xml' nella directory corrispondente.
-			int score = LineCoverage(result.getAbsolutePath() + "/coveragetot.xml");
-
-			System.out.println(result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
-
-			// Estrae il livello numerico dall'ultimo tratto del nome della directory,
-			// basandosi sulla convenzione specifica naming. Nella convenzione attuale:
-			// Directory = 0xlivello -> livello = 0x
-			int livello = Integer.parseInt(result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
-
-			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
-
-			saveT4(score, livello, className);
-
-			// Se il livello del robot generato è superiore al livello massimo attuale,
-			// aggiorna il livello massimo.
-			if(livello > liv)
-				liv = livello;
-
-		}
-
-		// Il seguente codice è l'adattamento ad evosuite del codice appena visto, i
-		// passaggi sono gli stessi
-        // EVOSUITE - T8
-		// TODO: RICHIEDE AGGIUSTAMENTI IN T8
-		Path directoryE = Paths.get("/VolumeT8/FolderTreeEvo/" + className + "/" + className + "SourceCode");
-
-		caricaFile(fileName, directoryE, classFile);
-
-		ProcessBuilder processBuilderE = new ProcessBuilder();
-
-        processBuilderE.command("bash", "robot_generazione.sh", className, "\"\"", "/VolumeT9/app/FolderTree/" + className + "/" + className + "SourceCode", String.valueOf(liv));
-        processBuilderE.directory(new File("/VolumeT8/Prototipo2.0/"));
-
-		Process processE = processBuilderE.start();
-
-		outputProcess(processE);
-
-		File resultsDirE = new File("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest");
-
-        File resultsE [] = resultsDirE.listFiles();
-        for(File result : resultsE) {
-			int score = LineCoverageE(result.getAbsolutePath() + "/TestReport/statistics.csv");
-
-			System.out.println(result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
-			int livello = Integer.parseInt(result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
-
-			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
-
-			saveT4(score, livello, className);
-
-		}
-
-    }
-
-	public static void saveRobots(String fileNameClass, String fileNameTest, String className, MultipartFile classFile, MultipartFile testFile)
-			throws IOException {
-
-		/*CARICAMENTO CLASSE */
-		Path directory = Paths.get("/VolumeT9/app/FolderTree/" + className + "/" + className + "SourceCode");
-
-		caricaFile(fileNameClass, directory, classFile);
-
-		/*CARICAMENTO TEST */
-		Path directoryTest = Paths.get("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest");
-		
-		caricaFile(fileNameTest, directoryTest, testFile);
-		
-		//Rinomina il file zip caricato secondo la convenzione attuale: |nomeClasse|TestRandoop.zip
-		File fileZipDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/");
-		File fileZip[] = fileZipDir.listFiles();
-		String nomeAttuale = fileZip[0].getAbsolutePath().toString();
-        String nuovoNome = "/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/" + className + "TestRandoop.zip";
-        File zipAttuale = new File(nomeAttuale);
-        File zipNuova = new File(nuovoNome);
-        boolean rinominato = zipAttuale.renameTo(zipNuova);
-
-		//Estrae i test dall'archivio caricato
-		RobotUtil.unzip(className);
-
-		//Elimina la zip dei test
-		Files.delete(Paths.get("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/" + className + "TestRandoop.zip"));
-
-		/*SALVATAGGIO RISULTATI NEL TASK T4 */
-
-		// Crea un oggetto File che rappresenta il percorso della directory contenente i
-		// risultati
-		// della generazione di robot da Randoop. Il percorso è costruito in base all'ID
-		// della classe di test 'className'.
-		File resultsDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest");
-
-		// Inizializza la variabile 'liv' a 0, rappresentante il massimo livello di
-		// robot prodotti da Randoop.
-		// Questo valore sarà aggiornato successivamente durante l'analisi dei
-		// risultati.
-		int liv = 0; // livelli di robot prodotti da randoop
-
-		File results[] = resultsDir.listFiles();
-
-		// Itera attraverso tutti i file nella directory dei risultati della generazione
-		// di robot da Randoop.
-
-		for (File result : results) {
-
-			// Calcola la copertura delle linee per ciascun file XML di copertura estraendo
-			// il valore dal file XML 'coveragetot.xml' nella directory corrispondente.
-			int score = LineCoverage(result.getAbsolutePath() + "/coveragetot.xml");
-			// Stampa le informazioni sulla copertura del livello
-			System.out.println(
-					result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
-
-			// Estrae il livello numerico dall'ultimo tratto del nome della directory,
-			// basandosi sulla convenzione specifica naming. Nella convenzione attuale:
-			// Directory = 0xlivello -> livello = 0x
-			int livello = Integer.parseInt(
-					result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
-
-			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
-
-			saveT4(score, livello, className);
 
 			// Se il livello del robot generato è superiore al livello massimo attuale,
 			// aggiorna il livello massimo.
@@ -443,8 +277,96 @@ public class RobotUtil {
 				liv = livello;
 
 		}
-		/*TODO: AGGIUSTAMENTI T8 PER EVOSUITE */
+
+		// Il seguente codice è l'adattamento ad evosuite del codice appena visto, i
+		// passaggi sono gli stessi
+		// EVOSUITE - T8
+		// TODO: RICHIEDE AGGIUSTAMENTI IN T8
+		Path directoryE = Paths.get("/VolumeT8/FolderTreeEvo/" + className + "/" + className + "SourceCode");
+
+		try {
+			// Verifica se la directory esiste già
+			if (!Files.exists(directoryE)) {
+				// Crea la directory
+				Files.createDirectories(directoryE);
+				System.out.println("La directory è stata creata con successo.");
+			} else {
+				System.out.println("La directory esiste già.");
+			}
+		} catch (Exception e) {
+			System.out.println("Errore durante la creazione della directory: " + e.getMessage());
+		}
+
+		try (InputStream inputStream = formData.getInputStream()) {
+			Path filePath = directoryE.resolve(fileName);
+			System.out.println(filePath.toString());
+			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+		}
+
+		ProcessBuilder processBuilderE = new ProcessBuilder();
+
+		processBuilderE.command("bash", "robot_generazione.sh", className, "\"\"",
+				"/VolumeT9/app/FolderTree/" + className + "/" + className + "SourceCode", String.valueOf(liv));
+		processBuilderE.directory(new File("/VolumeT8/Prototipo2.0/"));
+
+		Process processE = processBuilderE.start();
+
+		BufferedReader readerE = new BufferedReader(new InputStreamReader(processE.getInputStream()));
+		String lineE;
+		while ((lineE = readerE.readLine()) != null)
+			System.out.println(lineE);
+
+		readerE = new BufferedReader(new InputStreamReader(processE.getErrorStream()));
+		while ((lineE = readerE.readLine()) != null)
+			System.out.println(lineE);
+
+		try {
+			int exitCode = processE.waitFor();
+
+			System.out.println("ERRORE CODE: " + exitCode);
+		} catch (InterruptedException e) {
+			System.out.println(e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		File resultsDirE = new File("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest");
+
+		File resultsE[] = resultsDirE.listFiles();
+		for (File result : resultsE) {
+			int score = LineCoverageE(result.getAbsolutePath() + "/TestReport/statistics.csv");
+
+			System.out.println(
+					result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
+			int livello = Integer.parseInt(
+					result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
+
+			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
+
+			HttpClient httpClient = HttpClientBuilder.create().build();
+			HttpPost httpPost = new HttpPost("http://t4-g18-app-1:3000/robots");
+
+			JSONArray arr = new JSONArray();
+
+			JSONObject rob = new JSONObject();
+			rob.put("scores", String.valueOf(score));
+			rob.put("type", "evosuite");
+			rob.put("difficulty", String.valueOf(livello));
+			rob.put("testClassId", className);
+
+			arr.put(rob);
+
+			JSONObject obj = new JSONObject();
+			obj.put("robots", arr);
+
+			StringEntity jsonEntity = new StringEntity(obj.toString(), ContentType.APPLICATION_JSON);
+
+			httpPost.setEntity(jsonEntity);
+
+			HttpResponse response = httpClient.execute(httpPost);
+
+		}
+
 	}
-    
 
 }

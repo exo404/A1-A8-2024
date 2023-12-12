@@ -111,7 +111,7 @@ function redirectToPagereport() {
     localStorage.setItem("classe", classe);
     localStorage.setItem("robot", robot);
     localStorage.setItem("difficulty", difficulty);
-    window.location.href = "/report";
+    window.location.href = window.location.href.replace(/\/[^\/]+$/,'/'+"report");
   }
   else {
     alert("Seleziona una classe e un robot");
@@ -121,7 +121,7 @@ function redirectToPagereport() {
 }
 
 function redirectToPagemain() {
-  window.location.href = "/main";
+  window.location.href = window.location.href.replace(/\/[^\/]+$/,'/'+"main");
 }
 
 
@@ -166,7 +166,7 @@ function redirectToPageeditor() {
       localStorage.setItem("gameId", response.game_id);
       localStorage.setItem("turnId", response.turn_id);
       localStorage.setItem("roundId", response.round_id);
-      window.location.href = "/editor";
+      window.location.href = window.location.href.replace(/\/[^\/]+$/,'/'+"editor");
     },
     dataType: "json",
     error: function (error) {
@@ -220,7 +220,7 @@ function redirectToLogin() {
         }
         else{
           console.log("stai per essere reindirizzato alla pagina di login");
-          window.location.href = "/login";
+          window.location.href = window.location.href.replace(/\/[^\/]+$/,'/'+"login");
         }
     })
     .catch((error) => {

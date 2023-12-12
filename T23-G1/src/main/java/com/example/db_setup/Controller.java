@@ -167,8 +167,9 @@ public class Controller {
     }
         
     // Autenticazione
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam("email") String email,
+    @PostMapping("{language}/login")
+    public ResponseEntity<String> login(@PathVariable String language,
+                                        @RequestParam("email") String email,
                                         @RequestParam("password") String password, @CookieValue(name = "jwt", required = false) String jwt, HttpServletRequest request, HttpServletResponse response) {
 
         if(isJwtValid(jwt)) {
@@ -195,7 +196,7 @@ public class Controller {
         response.addCookie(jwtTokenCookie);
 
         try {
-            response.sendRedirect("/main");
+            response.sendRedirect(language + "/main");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -221,13 +222,13 @@ public class Controller {
     }
 
     // Logout
-    @GetMapping("/logout")
-    public ModelAndView logout(HttpServletResponse response) {
+    @GetMapping("{language}/logout")
+    public ModelAndView logout(@PathVariable String language, HttpServletResponse response) {
         Cookie jwtTokenCookie = new Cookie("jwt", null);
         jwtTokenCookie.setMaxAge(0);
         response.addCookie(jwtTokenCookie);
 
-        return new ModelAndView("redirect:http://localhost/login"); 
+        return new ModelAndView("redirect:http://localhost/" + language + "/login"); 
     }
 
     @PostMapping("/logout")
@@ -356,41 +357,51 @@ public class Controller {
         return ResponseEntity.ok(false);
     }
 
-    @GetMapping("/register")
-    public ModelAndView showRegistrationForm(HttpServletRequest request, @CookieValue(name = "jwt", required = false) String jwt) {
-        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/main"); 
+    @GetMapping("{language}/register")
+    public ModelAndView showRegistrationForm(   @PathVariable String language,
+                                                HttpServletRequest request,
+                                                @CookieValue(name = "jwt", required = false) String jwt) {
+        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/" + language + "/main"); 
 
-        return new ModelAndView("register");
+        return new ModelAndView(language + "/register");
     }
 
-    @GetMapping("/login")
-    public ModelAndView showLoginForm(HttpServletRequest request, @CookieValue(name = "jwt", required = false) String jwt) {
-        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/main"); 
+    @GetMapping("{language}/login")
+    public ModelAndView showLoginForm(  @PathVariable String language,
+                                        HttpServletRequest request,
+                                        @CookieValue(name = "jwt", required = false) String jwt) {
+        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/" + language + "/main"); 
 
-        return new ModelAndView("login");
+        return new ModelAndView(language + "/login");
     }
 
     
-    @GetMapping("/password_reset")
-    public ModelAndView showResetForm(HttpServletRequest request, @CookieValue(name = "jwt", required = false) String jwt) {
-        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/main"); 
+    @GetMapping("{language}/password_reset")
+    public ModelAndView showResetForm(  @PathVariable String language,
+                                        HttpServletRequest request,
+                                        @CookieValue(name = "jwt", required = false) String jwt) {
+        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/" + language + "/main"); 
         
-        return new ModelAndView("password_reset");
+        return new ModelAndView(language + "/password_reset");
     }
 
     
-    @GetMapping("/password_change")
-    public ModelAndView showChangeForm(HttpServletRequest request, @CookieValue(name = "jwt", required = false) String jwt) {
-        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/main"); 
+    @GetMapping("{language}/password_change")
+    public ModelAndView showChangeFor(  @PathVariable String language,
+                                        HttpServletRequest request,
+                                        @CookieValue(name = "jwt", required = false) String jwt) {
+        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/" + language + "/main"); 
 
-        return new ModelAndView("password_change");
+        return new ModelAndView(language + "/password_change");
     }
 
-    @GetMapping("/mail_register")
-    public ModelAndView showMailForm(HttpServletRequest request, @CookieValue(name = "jwt", required = false) String jwt) {
-        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/main"); 
+    @GetMapping("{language}/mail_register")
+    public ModelAndView showMailForm(   @PathVariable String language,
+                                        HttpServletRequest request,
+                                        @CookieValue(name = "jwt", required = false) String jwt) {
+        if(isJwtValid(jwt)) return new ModelAndView("redirect:http://localhost/" + language + "/main"); 
 
-        return new ModelAndView("mail_register");
+        return new ModelAndView(language + "/mail_register");
     }
 
 
