@@ -118,7 +118,7 @@ a:hover {
 <div class="file">
 
 <br>
-<center><p class="h3">Class upload</p></center>
+<center><p class="h3">Test upload</p></center>
 <div class="icon">
 <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="currentColor" class="bi bi-file-earmark-arrow-up-fill text-success" viewBox="0 0 16 16">
   <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707L6.354 9.854z"></path>
@@ -178,8 +178,13 @@ a:hover {
   </div>
 
   <div class="form-group mt-3">
-    <label class="mr-2">Upload your test (.zip) :</label>
+    <label class="mr-2">Upload your test Randoop (.zip) :</label>
     <input type="file" name="test" id="testInput">
+  </div>
+
+  <div class="form-group mt-3">
+    <label class="mr-2">Upload your test Evosuite (.zip) :</label>
+    <input type="file" name="testEvo" id="testInputEvo">
   </div>
 
   <div class="form-group mt-3">
@@ -230,9 +235,12 @@ a:hover {
       //Costante che rappresenta il file .java in input della classe
       const classInput = document.getElementById('fileInput');
       const file = classInput.files[0];
-      //Costante che rappresenta il file .zip in input dei test
+      //Costante che rappresenta il file .zip in input dei test Randoop
       const testInput = document.getElementById('testInput');
       const test = testInput.files[0];
+      //Costante che rappresenta il file .zip in input dei test Randoop
+      const testInputEvo = document.getElementById('testInputEvo');
+      const testEvo = testInputEvo.files[0];
     
       //Costante che rappresenta l'insieme dei dati del form e i file in input
       const formData = new FormData();
@@ -246,6 +254,7 @@ a:hover {
         category: category
       }));
       formData.append('test', test);
+      formData.append('testEvo', testEvo);
     
       //chiamata HTTP alla funzione uploadTest in HomeController con metodo POST e dati del form come body 
       fetch('/uploadTest', {

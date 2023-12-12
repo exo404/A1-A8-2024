@@ -47,9 +47,7 @@ public class RobotUtil {
 	
 		return destFile;
 	}
-	public static void unzip(String className) throws IOException {
-		String fileZip = "/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/" + className + "TestRandoop.zip";
-		File destDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/");
+	public static void unzip(String fileZip, File destDir) throws IOException {
 
 		byte[] buffer = new byte[1024];
 		ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
@@ -371,18 +369,22 @@ public class RobotUtil {
 
     }
 
-	public static void saveRobots(String fileNameClass, String fileNameTest, String className, MultipartFile classFile, MultipartFile testFile)
+	public static void saveRobots(String fileNameClass, String fileNameTest, String fileNameTestEvo , String className, MultipartFile classFile, MultipartFile testFile, MultipartFile testFileEvo)
 			throws IOException {
 
-		/*CARICAMENTO CLASSE */
+		/*CARICAMENTO CLASSE NEI VOLUMI T8 E T9*/
 		Path directory = Paths.get("/VolumeT9/app/FolderTree/" + className + "/" + className + "SourceCode");
-
+		Path directoryEvo = Paths.get("/VolumeT8/FolderTreeEvo/" + className + "/" + className + "SourceCode");		
 		caricaFile(fileNameClass, directory, classFile);
+		caricaFile(fileNameClass, directoryEvo, classFile);
 
 		/*CARICAMENTO TEST */
+		//Randoop
 		Path directoryTest = Paths.get("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest");
-		
 		caricaFile(fileNameTest, directoryTest, testFile);
+		//Evosuite
+		Path directoryTestEvo = Paths.get("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest");
+		caricaFile(fileNameTestEvo, directoryTestEvo, testFileEvo);
 		
 		//Rinomina il file zip caricato secondo la convenzione attuale: |nomeClasse|TestRandoop.zip
 		File fileZipDir = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/");
@@ -393,11 +395,30 @@ public class RobotUtil {
         File zipNuova = new File(nuovoNome);
         boolean rinominato = zipAttuale.renameTo(zipNuova);
 
-		//Estrae i test dall'archivio caricato
-		RobotUtil.unzip(className);
+		//Rinomina il file zip caricato secondo la convenzione attuale: |nomeClasse|TestEvosuite.zip
+		File fileZipDirEvo = new File("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest");
+		File fileZipEvo[] = fileZipDirEvo.listFiles();
+		String nomeAttualeEvo = fileZipEvo[0].getAbsolutePath().toString();
+        String nuovoNomeEvo = "/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest/" + className + "TestEvosuite.zip";
+        File zipAttualeEvo = new File(nomeAttualeEvo);
+        File zipNuovaEvo = new File(nuovoNomeEvo);
+        boolean rinominatoEvo = zipAttualeEvo.renameTo(zipNuovaEvo);
+
+		//Estrae i test dall'archivio caricato : Randoop
+		String zipRandoop = "/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/" + className + "TestRandoop.zip";
+		File destRandoop = new File("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/");
+		RobotUtil.unzip(zipRandoop, destRandoop);
 
 		//Elimina la zip dei test
 		Files.delete(Paths.get("/VolumeT9/app/FolderTree/" + className + "/RobotTest/RandoopTest/" + className + "TestRandoop.zip"));
+
+		//Estrae i test dall'archivio caricato : Evosuite
+		String zipEvo = "/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest/" + className + "TestEvosuite.zip";
+		File destEvo = new File("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest");
+		RobotUtil.unzip(zipEvo, destEvo);
+
+		//Elimina la zip dei test
+		Files.delete(Paths.get("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest/" + className + "TestEvosuite.zip"));
 
 		/*SALVATAGGIO RISULTATI NEL TASK T4 */
 
@@ -443,7 +464,24 @@ public class RobotUtil {
 				liv = livello;
 
 		}
+
 		/*TODO: AGGIUSTAMENTI T8 PER EVOSUITE */
+		// Il seguente codice è l'adattamento ad evosuite del codice appena visto, i
+		// passaggi sono gli stessi
+		File resultsDirEvo = new File("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest");
+
+        File resultsEvo [] = resultsDirEvo.listFiles();
+        for(File result : resultsEvo) {
+			int score = LineCoverageE(result.getAbsolutePath() + "/TestReport/statistics.csv");
+
+			System.out.println(result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
+			int livello = Integer.parseInt(result.toString().substring(result.toString().length() - 7, result.toString().length() - 5));
+
+			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
+
+			saveT4(score, livello, className);
+
+		}
 	}
     
 

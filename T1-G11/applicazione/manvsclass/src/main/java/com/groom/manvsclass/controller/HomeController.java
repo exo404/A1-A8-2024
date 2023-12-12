@@ -337,7 +337,9 @@ public class HomeController {
 	 */
 	@PostMapping("/uploadTest")
     @ResponseBody
-    public ResponseEntity<FileUploadResponse> uploadTest(@RequestParam("file") MultipartFile classFile, @RequestParam("model") String model, @RequestParam("test") MultipartFile testFile) throws IOException {
+    public ResponseEntity<FileUploadResponse> uploadTest(@RequestParam("file") MultipartFile classFile, @RequestParam("model") String model, @RequestParam("test") MultipartFile testFile,
+	
+															@RequestParam("testEvo") MultipartFile testFileEvo) throws IOException {
         
         //Legge i metadati della classe della parte "model" del body HTTP e li salva in un oggetto ClasseUT
         ObjectMapper mapper = new ObjectMapper();
@@ -352,7 +354,8 @@ public class HomeController {
         
         //Salva i test nel filesystem condiviso
         String fileNameTest = StringUtils.cleanPath(testFile.getOriginalFilename());
-        RobotUtil.saveRobots(fileNameClass, fileNameTest, classe.getName(), classFile ,testFile);
+		String fileNameTestEvo = StringUtils.cleanPath(testFileEvo.getOriginalFilename());
+        RobotUtil.saveRobots(fileNameClass, fileNameTest,fileNameTestEvo , classe.getName(), classFile ,testFile, testFileEvo);
 
         FileUploadResponse response = new FileUploadResponse();
         response.setFileName(fileNameClass);
