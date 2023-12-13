@@ -211,11 +211,12 @@ a:hover {
 
 
 <script>
+// Si aggancia al form tramite ID
 const form = document.getElementById('formId');
-
 
 function uploadFile(event) {
   
+  // Creazione delle costanti che rappresentano i dati input al form
   const name = document.getElementById('className').value;
   const date = document.getElementById('date').value;
   const difficulty = document.getElementById('difficulty').value;
@@ -227,9 +228,12 @@ function uploadFile(event) {
     document.getElementById('category3').value
   ];
 
-  const fileInput = document.getElementById('fileInput');
-  const file = fileInput.files[0];
+  // Costante che rappresenta il file .java in input
+  const classInput = document.getElementById('fileInput');
+  const file = classInput.files[0];
 
+  // Costante che rappresenta l'insieme dei dati
+	// del form e il file in input
   const formData = new FormData();
   formData.append('file', file);
   formData.append('model', JSON.stringify({
@@ -241,6 +245,8 @@ function uploadFile(event) {
     category: category
   }));
 
+  // Chiamata http alla funzione uploadFile in HomeController
+	// con metodo POST e dati del form come body 
   fetch('/uploadFile', {
     method: 'POST',
     body: formData
@@ -248,7 +254,7 @@ function uploadFile(event) {
   .then(response => response.json())
   .then(data => {
     console.log('Success:', data);
-	window.location.href = "/home_adm";
+		window.location.href = "/en/home_adm";
     // Aggiungi qui il codice per gestire la risposta dal server
   })
   .catch((error) => {

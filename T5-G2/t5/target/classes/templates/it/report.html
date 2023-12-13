@@ -7,7 +7,7 @@
     <link th:href="@{./t5/bootstrap-4/css/bootstrap.min.css}" rel="stylesheet" />
     <script th:src="@{/t5/js/main.js}">
     </script>
-    <title>Choose your enemy</title>
+    <title>Scegli il tuo nemico</title>
 </head>
 
 <body class=bg-custom>
@@ -21,12 +21,12 @@
     <div class="report_cont">
       <!-- Contenuto riga 1 -->
       <div class="titolo">
-        <span class="v5_2096_report">HERE IS YOUR SELECTION</span>
+        <span class="v5_2096_report">ECCO LA TUA SELEZIONE</span>
         <div class="image-report">
             <img src="/t5/images/George_line.png" alt="Linea colorata curva" style="width: 377px; height: 32px;">
           </div>
         <div class="class_test">
-          <span class="lab_r1"> CLASS TO TEST<p id="class" class="custom-p1" style="display: inline-block;"></p></span>
+          <span class="lab_r1"> CLASSE DA TESTARE<p id="class" class="custom-p1" style="display: inline-block;"></p></span>
           <!-- <div class="divisore">
               <span class="div_blanco"></span>
               style="width: 377px; height: 32px;"
@@ -34,14 +34,14 @@
         </div>
       </div>
       <div class="robot_test">
-        <span class="lab_r"> ROBOT TO FIGHT <p id="robot" class="custom-p2" style="display: inline-block;"></p></span>
+        <span class="lab_r"> ROBOT DA SFIDARE <p id="robot" class="custom-p2" style="display: inline-block;"></p></span>
       </div>
     </div><!-- Fine Contenuto riga 1 -->
   
     <div class="div_buttons">
         <div class="div_back">
-          <button type="button" class="btn custom-button" th:onclick="redirectToPagemain()">Go back</button>
-          <button type="button" class="btn custom-button" th:onclick="redirectToPageeditor()">Submit</button>
+          <button type="button" class="btn custom-button" th:onclick="redirectToPagemain()">Indietro</button>
+          <button type="button" class="btn custom-button" th:onclick="redirectToPageeditor()">Invia</button>
       </div>
   </div>
   <script>
@@ -49,7 +49,7 @@
     var robotScelto = localStorage.getItem("robot");
     var difficulty = localStorage.getItem("difficulty");
 
-    if(nameCUT == null || robotScelto == null || difficulty == null) window.location.href = "/main";
+    if(nameCUT == null || robotScelto == null || difficulty == null) window.location.href = window.location.href.replace(/\/[^\/]+$/,'/'+"main");
 
     document.getElementById("class").innerText = nameCUT;
     document.getElementById("robot").innerText = robotScelto + " - LVL " + difficulty;

@@ -15,8 +15,9 @@
     <description>DB_Setup</description>
     <properties>
         <java.version>8</java.version>
-        <springsecurity.version>5.1.1.RELEASE</springsecurity.version>
+        <spring-security.version>5.1.1.RELEASE</spring-security.version>
     </properties>
+
     <dependencies>
 
         <dependency>
@@ -72,7 +73,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
     

@@ -64,12 +64,12 @@ public class HomeController {
         this.srepo = srepo;
     }
 
-    @GetMapping("{language}/home_adm")
+    @GetMapping("/{language}/home_adm")
     public String showHomeAdmin(@PathVariable String language) {
-        return language +  "/home_adm";
+        return  language +  "/home_adm";
     }
 
-    @GetMapping("{language}/loginAdmin")
+    @GetMapping("/{language}/loginAdmin")
     public String showLoginAdmin(@PathVariable String language) {
         return language + "/login_admin";
     }
@@ -81,7 +81,7 @@ public class HomeController {
 
     @GetMapping("{language}/modificaClasse")
     public String showModificaClasse(@PathVariable String language) {
-        return  language + "/modificaClasse";
+        return   language + "/modificaClasse";
     }
 
     @GetMapping("{language}/uploadClasse")

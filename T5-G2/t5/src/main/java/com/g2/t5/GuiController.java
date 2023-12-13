@@ -30,6 +30,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -160,7 +163,7 @@ public class GuiController {
         model.addAttribute("hashMap2", robotList);
 
         //model.addAttribute("evRobot", evosuiteLevel); //aggiunto
-        return langauge + "/main";
+        return language + "/main";
     }
 
     // @PostMapping("/sendVariable")

@@ -216,11 +216,11 @@ function Regi() {
   .then(response => response.json())
   .then(data => {
     console.log('Success:', data);
-	window.location.href = "/home_adm";
+	window.location.href = "/it/home_adm";
     // Aggiungi qui il codice per gestire la risposta dal server
   })
   .catch((error) => {
-  window.location.href = "/registraAdmin";
+  window.location.href = "/it/registraAdmin";
     console.error('Error:', error);
     // Aggiungi qui il codice per gestire gli errori
   });

@@ -153,7 +153,7 @@ a:hover {
   
 
   <div class="col-12">
-    <button type="button" onclick="uploadReport()" class="btn btn-success">Invia</button>
+    <button type="button" onclick="uploadReport()" class="btn btn-success">Send</button>
   </div>
 </form>
 
@@ -217,11 +217,11 @@ function uploadReport(event) {
   .then(response => response.json())
   .then(data => {
     console.log('Success:', data);
-	window.location.href = "/home";
+	window.location.href = "/en/home";
     // Aggiungi qui il codice per gestire la risposta dal server
   })
   .catch((error) => {
-  window.location.href = "/home";
+  window.location.href = "/en/home";
     console.error('Error:', error);
     // Aggiungi qui il codice per gestire gli errori
   });

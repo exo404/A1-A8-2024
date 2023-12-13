@@ -118,7 +118,7 @@ a:hover {
 <div class="file">
 
 <br>
-<center><p class="h3">Modifica Classe</p></center>
+<center><p class="h3">Edit Class</p></center>
 <div class="icon">
 
 
@@ -159,7 +159,7 @@ a:hover {
 
 <script type="text/javascript">
 var parametro = location.search.split('parametro=')[1];
-    fetch('/home/' + parametro)
+    fetch('/en/home/' + parametro)
         .then(response => response.json())
         .then(data => {
             let classutList = document.getElementById('classut-list');
@@ -293,11 +293,11 @@ function uploadFile(event) {
   .then(response => response.json())
   .then(data => {
     console.log('Success:', data);
-	window.location.href = "/home";
+	window.location.href = "/en/home";
     // Aggiungi qui il codice per gestire la risposta dal server
   })
   .catch((error) => {
-  window.location.href = "/home";
+  window.location.href = "/en/home";
     console.error('Error:', error);
     // Aggiungi qui il codice per gestire gli errori
   });

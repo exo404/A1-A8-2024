@@ -120,7 +120,7 @@ a:hover {
 <a class="navbar-brand" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
   <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"/>
 </svg></a>
-  <a class="navbar-brand" href="/home_adm">Admin Home</a>
+  <a class="navbar-brand" href="/en/home_adm">Admin Home</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -133,8 +133,8 @@ a:hover {
           Sort By
         </a>
         <div class="dropdown-menu" aria-labelledby="sortByDropdown">
-          <a class="dropdown-item" href="/home_adm?parametro=1">Date</a>
-          <a class="dropdown-item" href="/home_adm?parametro=2">Name</a>
+          <a class="dropdown-item" href="/en/home_adm?parametro=1">Date</a>
+          <a class="dropdown-item" href="/en/home_adm?parametro=2">Name</a>
           
         </div>
       </li>
@@ -143,13 +143,13 @@ a:hover {
           Filter by Difficulty
         </a>
         <div class="dropdown-menu" aria-labelledby="filterDropdown">
-          <a class="dropdown-item" href="/home_adm?parametro=3">Beginner</a>
-          <a class="dropdown-item" href="/home_adm?parametro=4">Intermediate</a>
-          <a class="dropdown-item" href="/home_adm?parametro=5">Advanced</a>
+          <a class="dropdown-item" href="/en/home_adm?parametro=3">Beginner</a>
+          <a class="dropdown-item" href="/en/home_adm?parametro=4">Intermediate</a>
+          <a class="dropdown-item" href="/en/home_adm?parametro=5">Advanced</a>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/uploadClasse">+ Add Class</a>
+        <a class="nav-link" href="/en/uploadClasse">+ Add Class</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="home_adm" method="get">
@@ -177,11 +177,11 @@ var parametro = location.search.split('parametro=')[1];
 var stringa_metodo;
 if(typeof parametro == "undefined" )
 {
-  stringa_metodo='/home';
+  stringa_metodo='/en/home';
 }
 else
 {
-	stringa_metodo='/home/'+parametro;
+	stringa_metodo='/en/home/'+parametro;
    switch(parametro) {
   case '1':
     stringa_metodo='/orderbydate';
@@ -217,7 +217,7 @@ else
 <a href="javascript:void(0);">
 <div class="hover">
 
-<button type="button" class="btn btn-light" onclick="window.location.href='modificaClasse?parametro=${home.name}'">
+<button type="button" class="btn btn-light" onclick="window.location.href='/en/modificaClasse?parametro=${home.name}'">
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
   </svg>

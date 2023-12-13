@@ -334,7 +334,7 @@
   <div class="bigcontainer">
     <div class="container">
       <div class="editor-bar">
-        <span class="text">TextEditor</span>
+        <span class="text">Editor di Testo</span>
         <div class="image"></div>
       </div>
     </div>
@@ -429,7 +429,7 @@ public class TestClasse {
       </div>
       <div class="container2">
         <div class="top-bar2">
-          Class Under Test
+          Classe da testare
         </div>
         <textarea id="sidebar-textarea"></textarea>
       </div>    
@@ -624,7 +624,7 @@ public class TestClasse {
         var logout = document.getElementById("logout");
         logout.addEventListener("click", function(){
           if(confirm("Sei sicuro di voler effettuare il logout?")){
-            fetch('http://localhost/logout', {
+            fetch('http://localhost/it/logout', {
                 method: 'GET',
             })
             .then(response => {

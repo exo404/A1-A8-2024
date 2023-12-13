@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
@@ -167,9 +170,8 @@ public class Controller {
     }
         
     // Autenticazione
-    @PostMapping("{language}/login")
-    public ResponseEntity<String> login(@PathVariable String language,
-                                        @RequestParam("email") String email,
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestParam("email") String email,
                                         @RequestParam("password") String password, @CookieValue(name = "jwt", required = false) String jwt, HttpServletRequest request, HttpServletResponse response) {
 
         if(isJwtValid(jwt)) {
@@ -196,7 +198,7 @@ public class Controller {
         response.addCookie(jwtTokenCookie);
 
         try {
-            response.sendRedirect(language + "/main");
+            response.sendRedirect("/en/main");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -223,7 +225,7 @@ public class Controller {
 
     // Logout
     @GetMapping("{language}/logout")
-    public ModelAndView logout(@PathVariable String language, HttpServletResponse response) {
+    public ModelAndView showlogout(@PathVariable String language, HttpServletResponse response) {
         Cookie jwtTokenCookie = new Cookie("jwt", null);
         jwtTokenCookie.setMaxAge(0);
         response.addCookie(jwtTokenCookie);

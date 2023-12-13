@@ -147,7 +147,7 @@ a:hover {
   
   
   <div class="mb-3">
-    <label for="description" class="form-label" >Comment</label>
+    <label for="description" class="form-label" >Commento</label>
     <textarea class="form-control" id="description" rows="3"></textarea>
   </div>
   
@@ -199,7 +199,7 @@ a:hover {
 
 </body>
 <script>
-	var parametro = location.search.split('parametro=')[1];
+	var parametro = location.search.split('parametro=')[1]==null? "non definito":location.search.split('parametro=')[1] ;
 	document.getElementById('nomeC').innerHTML="Report "+parametro;
 function uploadReport(event) {
   const description = document.getElementById('description').value;
@@ -217,11 +217,11 @@ function uploadReport(event) {
   .then(response => response.json())
   .then(data => {
     console.log('Success:', data);
-	window.location.href = "/home";
+	window.location.href = "/it/home";
     // Aggiungi qui il codice per gestire la risposta dal server
   })
   .catch((error) => {
-  window.location.href = "/home";
+  window.location.href = "/it/home";
     console.error('Error:', error);
     // Aggiungi qui il codice per gestire gli errori
   });

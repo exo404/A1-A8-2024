@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Login Page</title>
+    <link rel="stylesheet" th:href="@{/t23/css/login.css}" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>LOGIN</h1>
+      <form th:action="@{/en/login}" method="post">
+      <form>
+        <input type="text" id="email" name="email" placeholder="Username">
+        <input type="password" id="password" name="password" placeholder="Password">
+        <input type="submit" value="Log in">
+		  <!-- <button class="google-login-button">Accedi con Google</button> -->
+		<a class="login-signup-now" data-uia="login-signup-now" href="/en/register">Not registered yet? Sign in.</a>
+    <a class="login-help-link link" target="_self" data-uia="login-help-link" href="/en/password_reset">Password forgotten?</a>
+      </form>
+    </div>
+  </body>
+</html>

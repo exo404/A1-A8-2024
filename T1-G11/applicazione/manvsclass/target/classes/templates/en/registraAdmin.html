@@ -118,7 +118,7 @@ a:hover {
 <div class="file">
 
 <br>
-<center><p class="h3">Registrazione Amministratore</p></center>
+<center><p class="h3">Sign in for Admin</p></center>
 <div class="icon">
 
 <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
@@ -133,12 +133,12 @@ a:hover {
 <div class="card-body">
  <form id="uploadForm">
   <div class="mb-3">
-    <label for="nome" class="form-label">Nome</label>
+    <label for="nome" class="form-label">Name</label>
     <input type="text" class="form-control" id="nome" aria-describedby="classNameHelp">
   </div>
   
   <div class="mb-3">
-    <label for="cognome" class="form-label">Cognome</label>
+    <label for="cognome" class="form-label">Surname</label>
     <input type="text" class="form-control" id="cognome" aria-describedby="classNameHelp">
   </div>
   
@@ -157,7 +157,7 @@ a:hover {
   
 
   <div class="col-12">
-    <button type="button" onclick="Regi()" class="btn btn-success">Registrati</button>
+    <button type="button" onclick="Regi()" class="btn btn-success">Sign in</button>
   </div>
 </form>
 
@@ -216,11 +216,11 @@ function Regi() {
   .then(response => response.json())
   .then(data => {
     console.log('Success:', data);
-	window.location.href = "/home_adm";
+	window.location.href = "/en/home_adm";
     // Aggiungi qui il codice per gestire la risposta dal server
   })
   .catch((error) => {
-  window.location.href = "/registraAdmin";
+  window.location.href = "/en/registraAdmin";
     console.error('Error:', error);
     // Aggiungi qui il codice per gestire gli errori
   });

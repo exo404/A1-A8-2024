@@ -159,7 +159,7 @@ a:hover {
 
 <script type="text/javascript">
 var parametro = location.search.split('parametro=')[1];
-    fetch('/home/' + parametro)
+    fetch('/it/home/' + parametro)
         .then(response => response.json())
         .then(data => {
             let classutList = document.getElementById('classut-list');
@@ -293,11 +293,11 @@ function uploadFile(event) {
   .then(response => response.json())
   .then(data => {
     console.log('Success:', data);
-	window.location.href = "/home";
+	window.location.href = "/it/home";
     // Aggiungi qui il codice per gestire la risposta dal server
   })
   .catch((error) => {
-  window.location.href = "/home";
+  window.location.href = "/it/home";
     console.error('Error:', error);
     // Aggiungi qui il codice per gestire gli errori
   });

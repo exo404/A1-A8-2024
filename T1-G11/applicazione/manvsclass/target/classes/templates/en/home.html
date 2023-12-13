@@ -122,7 +122,7 @@ a:hover {
   <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
   <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
 </svg></a>
-  <a class="navbar-brand" href="/home">Home</a>
+  <a class="navbar-brand" href="/en/home">Home</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -135,8 +135,8 @@ a:hover {
           Sort By
         </a>
         <div class="dropdown-menu" aria-labelledby="sortByDropdown">
-          <a class="dropdown-item" href="/home?parametro=1">Date</a>
-          <a class="dropdown-item" href="/home?parametro=2">Name</a>
+          <a class="dropdown-item" href="/en/home?parametro=1">Date</a>
+          <a class="dropdown-item" href="/en/home?parametro=2">Name</a>
           
         </div>
       </li>
@@ -145,9 +145,9 @@ a:hover {
           Filter by Difficulty
         </a>
         <div class="dropdown-menu" aria-labelledby="filterDropdown">
-          <a class="dropdown-item" href="/home?parametro=3">Beginner</a>
-          <a class="dropdown-item" href="/home?parametro=4">Intermediate</a>
-          <a class="dropdown-item" href="/home?parametro=5">Advanced</a>
+          <a class="dropdown-item" href="/en/home?parametro=3">Beginner</a>
+          <a class="dropdown-item" href="/en/home?parametro=4">Intermediate</a>
+          <a class="dropdown-item" href="/en/home?parametro=5">Advanced</a>
         </div>
       </li>
       
@@ -177,11 +177,11 @@ var parametro = location.search.split('parametro=')[1];
 var stringa_metodo;
 if(typeof parametro == "undefined" )
 {
-  stringa_metodo='/home';
+  stringa_metodo='/en/home';
 }
 else
 {
-	stringa_metodo='/home/'+parametro;
+	stringa_metodo='/en/home/'+parametro;
    switch(parametro) {
   case '1':
     stringa_metodo='/orderbydate';
@@ -217,7 +217,7 @@ else
 <a href="javascript:void(0);">
 <div class="hover">
 
-<button type="button" class="btn btn-light" onclick="window.location.href='reportClasse?parametro=${home.name}'">
+<button type="button" class="btn btn-light" onclick="window.location.href='/en/reportClasse?parametro=${home.name}'">
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag-fill text-danger" viewBox="0 0 16 16">
   <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12.435 12.435 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A19.626 19.626 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a19.587 19.587 0 0 0 1.349-.476l.019-.007.004-.002h.001"/>
 </svg>

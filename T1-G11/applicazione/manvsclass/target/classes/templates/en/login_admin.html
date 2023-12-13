@@ -118,7 +118,7 @@ a:hover {
 <div class="file">
 
 <br>
-<center><p class="h3">Login Amministratore</p></center>
+<center><p class="h3">Admin Login</p></center>
 <div class="icon">
 
 <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="currentColor" class="bi bi-person-fill-gear text-primary" viewBox="0 0 16 16">
@@ -195,7 +195,7 @@ function Logi() {
   .then(data => {
     console.log('Success:', data);
 	if (data === "ok") {
-	  window.location.href = "/home_adm";
+	  window.location.href = "/en/home_adm";
 	} else {
 	  alert("Utente non registrato");
 	}
