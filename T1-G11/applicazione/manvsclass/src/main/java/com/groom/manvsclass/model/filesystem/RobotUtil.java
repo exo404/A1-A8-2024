@@ -206,7 +206,7 @@ public class RobotUtil {
 		}
 	}
 
-	public static void saveT4(int score, int livello, String className) throws IOException{
+	public static void saveT4(int score, int livello, String className, String robotName) throws IOException{
 		// Configurazione di un client HTTP
 			HttpClient httpClient = HttpClientBuilder.create().build();
 
@@ -222,14 +222,13 @@ public class RobotUtil {
 			// l'array JSON viene utilizzato per raggruppare gli oggetti JSON che
 			// rappresentano le informazioni sui robot generati.
 			// L'array arr contiene una serie di oggetti rob, ognuno dei quali rappresenta
-			// le caratteristiche di un robot specifico generato da Randoop.
+
 
 			// Aggiunge al robot l'informazione relativa al punteggio convertito in stringa
 			rob.put("scores", String.valueOf(score));
 
 			// aggiunge al robot l'informazione relativa a quale robot è stato utilizzato,
-			// in questo caso randoop
-			rob.put("type", "randoop");
+			rob.put("type", robotName);
 
 			// aggiunge al robot l'informazione riguardante il livello di difficoltà
 			// converitto in stringa
@@ -306,7 +305,7 @@ public class RobotUtil {
 		// Questo valore sarà aggiornato successivamente durante l'analisi dei
 		// risultati.
 		int liv = 0; //livelli di robot prodotti da randoop
-
+		String randoopName = "randoop";
         File results [] = resultsDir.listFiles();
 
 		// Itera attraverso tutti i file nella directory dei risultati della generazione
@@ -326,7 +325,7 @@ public class RobotUtil {
 
 			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
 
-			saveT4(score, livello, className);
+			saveT4(score, livello, className, randoopName);
 
 			// Se il livello del robot generato è superiore al livello massimo attuale,
 			// aggiorna il livello massimo.
@@ -351,7 +350,7 @@ public class RobotUtil {
 		Process processE = processBuilderE.start();
 
 		outputProcess(processE);
-
+		String evosuiteName = "evosuite";
 		File resultsDirE = new File("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest");
 
         File resultsE [] = resultsDirE.listFiles();
@@ -363,7 +362,7 @@ public class RobotUtil {
 
 			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
 
-			saveT4(score, livello, className);
+			saveT4(score, livello, className, evosuiteName);
 
 		}
 
@@ -433,7 +432,7 @@ public class RobotUtil {
 		// Questo valore sarà aggiornato successivamente durante l'analisi dei
 		// risultati.
 		int liv = 0; // livelli di robot prodotti da randoop
-
+		String randoopName = "randoop";
 		File results[] = resultsDir.listFiles();
 
 		// Itera attraverso tutti i file nella directory dei risultati della generazione
@@ -456,7 +455,7 @@ public class RobotUtil {
 
 			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
 
-			saveT4(score, livello, className);
+			saveT4(score, livello, className, randoopName);
 
 			// Se il livello del robot generato è superiore al livello massimo attuale,
 			// aggiorna il livello massimo.
@@ -469,7 +468,7 @@ public class RobotUtil {
 		// Il seguente codice è l'adattamento ad evosuite del codice appena visto, i
 		// passaggi sono gli stessi
 		File resultsDirEvo = new File("/VolumeT8/FolderTreeEvo/" + className + "/RobotTest/EvoSuiteTest");
-
+		String evosuiteName = "evosuite";
         File resultsEvo [] = resultsDirEvo.listFiles();
         for(File result : resultsEvo) {
 			int score = LineCoverageE(result.getAbsolutePath() + "/TestReport/statistics.csv");
@@ -479,7 +478,7 @@ public class RobotUtil {
 
 			System.out.println("La copertura del livello " + String.valueOf(livello) + " è: " + String.valueOf(score));
 
-			saveT4(score, livello, className);
+			saveT4(score, livello, className, evosuiteName);
 
 		}
 	}
