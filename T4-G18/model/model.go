@@ -106,3 +106,18 @@ type Robot struct {
 func (Robot) TableName() string {
 	return "robots"
 }
+
+type ClassUT struct {
+	ID	int64     `gorm:"primaryKey;autoIncrement"`
+	Name          string   `gorm:"not null"`
+	Date   string `gorm:"not null"`
+	Difficulty   string `gorm:"not null"`
+	CodeUri string `gorm:"default:null"`
+	Description      string    `gorm:"default:null"`
+	Category  []string    `gorm:"default:null"`
+}
+
+func (ClassUT) TableName() string {
+	return "classUT"
+}
+

@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/alarmfox/game-repository/api"
+	"github.com/alarmfox/game-repository/api/class_ut"
 	"github.com/alarmfox/game-repository/api/game"
 	"github.com/alarmfox/game-repository/api/robot"
 	"github.com/alarmfox/game-repository/api/round"
@@ -94,6 +95,7 @@ func run(ctx context.Context, c Configuration) error {
 
 	err = db.AutoMigrate(
 		&model.Game{},
+		&model.ClassUT{},
 		&model.Round{},
 		&model.Player{},
 		&model.Turn{},
@@ -164,6 +166,9 @@ func run(ctx context.Context, c Configuration) error {
 			// game endpoint
 			gameController = game.NewController(game.NewRepository(db))
 
+			// classUT endpoint
+			classUTController = class_ut.NewController(class_ut.NewRepository(db));
+
 			// round endpoint
 			roundController = round.NewController(round.NewRepository(db))
 
@@ -176,6 +181,7 @@ func run(ctx context.Context, c Configuration) error {
 
 		r.Mount(c.ApiPrefix, setupRoutes(
 			gameController,
+			classUTController,
 			roundController,
 			turnController,
 			robotController,
@@ -303,7 +309,7 @@ func makeDefaults(c *Configuration) {
 
 }
 
-func setupRoutes(gc *game.Controller, rc *round.Controller, tc *turn.Controller, roc *robot.Controller) *chi.Mux {
+func setupRoutes(gc *game.Controller,cut *class_ut.Controller, rc *round.Controller, tc *turn.Controller, roc *robot.Controller) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(api.WithMaximumBodySize(api.DefaultBodySize))
@@ -325,6 +331,23 @@ func setupRoutes(gc *game.Controller, rc *round.Controller, tc *turn.Controller,
 
 		// Delete game
 		r.Delete("/{id}", api.HandlerFunc(gc.Delete))
+
+	})
+
+	r.Route("/class_ut", func(r chi.Router) {
+		//Get classUT
+		r.Get("/{id}", api.HandlerFunc(cut.FindByID))
+
+		// Create classUT
+		r.With(middleware.AllowContentType("application/json")).
+			Post("/", api.HandlerFunc(cut.Create))
+
+		// Update classUT
+		r.With(middleware.AllowContentType("application/json")).
+			Put("/{id}", api.HandlerFunc(cut.Update))
+
+		// Delete classUT
+		r.Delete("/{id}", api.HandlerFunc(cut.Delete))
 
 	})
 
