@@ -7,6 +7,10 @@ Componenti:
 
 # GUIDA ALL'INSTALLAZIONE
 
+Consultare la documentazione al seguente link per una versione aggiornata:
+
+https://github.com/exo404/A1-A8-2024/tree/main/T1-G11/documentazione
+
 ## PASSO 1
 Scaricare Docker Desktop per il proprio sistema operativo.
 
@@ -54,3 +58,6 @@ https://github.com/Testing-Game-SAD-2023/T11-G41/assets/128593973/e4e1ef4d-f2f3-
 
 https://github.com/Testing-Game-SAD-2023/T11-G41/assets/128593973/c94398b2-178e-4b7f-a6d6-685c2689c03c
 
+## Precaricamento classi e test
+
+https://github.com/exo404/A1-A8-2024/blob/main/T1-G11/documentazione/Precaricamento%20test%20e%20classi.mp4
